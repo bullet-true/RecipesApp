@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="padding_base">16dp</dimen>
+    <dimen name="padding_half">8dp</dimen>
+    <dimen name="nav_panel_height">52dp</dimen>
+    <dimen name="buttons_margin">4dp</dimen>
+</resources>
