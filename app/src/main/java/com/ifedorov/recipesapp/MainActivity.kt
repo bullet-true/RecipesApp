@@ -5,7 +5,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import com.ifedorov.recipesapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -27,9 +28,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (savedInstanceState == null) {
-            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.mainContainer, CategoriesListFragment())
-            transaction.commit()
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                add<CategoriesListFragment>(R.id.mainContainer)
+                addToBackStack(null)
+            }
         }
     }
 }
