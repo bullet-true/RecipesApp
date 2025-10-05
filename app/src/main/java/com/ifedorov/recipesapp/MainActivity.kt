@@ -5,6 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.ifedorov.recipesapp.databinding.ActivityMainBinding
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
-                replace<CategoriesListFragment>(R.id.mainContainer)
+                add<CategoriesListFragment>(R.id.mainContainer)
             }
         }
 
