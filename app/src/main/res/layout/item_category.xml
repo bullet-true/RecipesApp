@@ -3,16 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="220dp"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="8dp"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/spacing_small"
+    android:layout_marginVertical="@dimen/spacing_small"
+    android:clickable="true"
+    android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="@dimen/corner_radius">
 
-    <ImageView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/itemLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/bcg_categories" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivCardItem"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_card_item_height"
+            android:contentDescription="бургеры"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bcg_categories"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvCardItemHeader"
+            style="@style/StyleItemHeaderText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="бургеры"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivCardItem" />
+
+        <TextView
+            style="@style/StyleBodyTextCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Рецепты всех популярных видов бургеров"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvCardItemHeader" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
