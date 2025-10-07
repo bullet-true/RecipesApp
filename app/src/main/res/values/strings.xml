@@ -2,4 +2,6 @@
     <string name="app_name">RecipesApp</string>
     <string name="categories">категории</string>
     <string name="favorite">избранное</string>
+    <string name="burgers">бургеры</string>
+    <string name="categories_burgers_description">Рецепты всех популярных видов бургеров</string>
 </resources>
