@@ -1,4 +1,4 @@
-package com.ifedorov.recipesapp
+package com.ifedorov.recipesapp.model
 
 data class Ingredient(
     val quantity: String,

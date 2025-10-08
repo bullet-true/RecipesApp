@@ -1,0 +1,43 @@
+package com.ifedorov.recipesapp
+
+import android.graphics.drawable.Drawable
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.ifedorov.recipesapp.databinding.ItemCategoryBinding
+import com.ifedorov.recipesapp.model.Category
+import java.io.InputStream
+
+class CategoriesListAdapter(private val dataSet: List<Category>) :
+    RecyclerView.Adapter<CategoriesListAdapter.ViewHolder>() {
+
+    class ViewHolder(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        val inflater = LayoutInflater.from(viewGroup.context)
+        val binding = ItemCategoryBinding.inflate(inflater, viewGroup, false)
+        return ViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        val category = dataSet[position]
+
+        try {
+            val inputStream: InputStream? = viewHolder.itemView.context?.assets?.open(category.imageUrl)
+            val image = Drawable.createFromStream(inputStream, null)
+            viewHolder.binding.ivCardItem.setImageDrawable(image)
+        } catch (e: Exception) {
+            Log.e("CategoriesListAdapter", "Error loading image: ${category.imageUrl}")
+            e.printStackTrace()
+        }
+
+        with(viewHolder.binding) {
+            ivCardItem.contentDescription = category.title
+            tvCardItemHeader.text = category.title
+            tvDescription.text = category.description
+        }
+    }
+
+    override fun getItemCount(): Int = dataSet.size
+}

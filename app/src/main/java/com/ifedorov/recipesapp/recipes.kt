@@ -1,5 +1,7 @@
 package com.ifedorov.recipesapp
 
+import com.ifedorov.recipesapp.model.Category
+
 object STUB {
     private val categories = listOf(
         Category(

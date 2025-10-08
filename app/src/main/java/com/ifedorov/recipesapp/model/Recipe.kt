@@ -1,4 +1,4 @@
-package com.ifedorov.recipesapp
+package com.ifedorov.recipesapp.model
 
 data class Recipe(
     val id: Int,
