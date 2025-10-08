@@ -38,6 +38,7 @@
             app:layout_constraintTop_toBottomOf="@id/ivCardItem" />
 
         <TextView
+            android:id="@+id/tvDescription"
             style="@style/StyleBodyTextCategories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
