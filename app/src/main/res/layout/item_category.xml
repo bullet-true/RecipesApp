@@ -12,7 +12,7 @@
     app:cardCornerRadius="@dimen/corner_radius">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/itemLayout"
+        android:id="@+id/cardItemLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
