@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.ifedorov.recipesapp.common.Constants
 
 import com.ifedorov.recipesapp.databinding.FragmentRecipesListBinding
 
@@ -31,9 +32,9 @@ class RecipesListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        categoryId = requireArguments().getInt("ARG_CATEGORY_ID")
-        categoryName = requireArguments().getString("ARG_CATEGORY_NAME")
-        categoryImageUrl = requireArguments().getString("ARG_CATEGORY_IMAGE_URL")
+        categoryId = requireArguments().getInt(Constants.ARG_CATEGORY_ID)
+        categoryName = requireArguments().getString(Constants.ARG_CATEGORY_NAME)
+        categoryImageUrl = requireArguments().getString(Constants.ARG_CATEGORY_IMAGE_URL)
 
         Log.d("RecipesListFragment", "$categoryId $categoryName $categoryImageUrl")
     }

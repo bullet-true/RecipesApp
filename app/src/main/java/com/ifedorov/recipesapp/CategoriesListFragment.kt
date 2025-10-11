@@ -8,6 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.ifedorov.recipesapp.common.Constants
 import com.ifedorov.recipesapp.databinding.FragmentListCategoriesBinding
 
 class CategoriesListFragment : Fragment() {
@@ -49,13 +50,14 @@ class CategoriesListFragment : Fragment() {
     }
 
     private fun openRecipesByCategoryId(categoryId: Int) {
-        val categoryName = STUB.getCategories().find { it.id == categoryId }?.title
-        val categoryImageUrl = STUB.getCategories().find { it.id == categoryId }?.imageUrl
+        val category = STUB.getCategories().find { it.id == categoryId }
+        val categoryName = category?.title
+        val categoryImageUrl = category?.imageUrl
 
         val bundle = bundleOf(
-            "ARG_CATEGORY_ID" to categoryId,
-            "ARG_CATEGORY_NAME" to categoryName,
-            "ARG_CATEGORY_IMAGE_URL" to categoryImageUrl
+            Constants.ARG_CATEGORY_ID to categoryId,
+            Constants.ARG_CATEGORY_NAME to categoryName,
+            Constants.ARG_CATEGORY_IMAGE_URL to categoryImageUrl
         )
 
         parentFragmentManager.commit {
