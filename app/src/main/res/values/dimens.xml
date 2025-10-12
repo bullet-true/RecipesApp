@@ -7,6 +7,7 @@
     <dimen name="header_layout_height">224dp</dimen>
     <dimen name="header_text_padding">10dp</dimen>
     <dimen name="image_card_item_height">130dp</dimen>
+    <dimen name="image_card_recipe_item_height">100dp</dimen>
 
     <dimen name="header_text_size">20sp</dimen>
     <dimen name="header_item_text_size">14sp</dimen>
