@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ifedorov.recipesapp.databinding.ItemCategoryBinding
 import com.ifedorov.recipesapp.model.Category
-import java.io.InputStream
 
 class CategoriesListAdapter(private val dataSet: List<Category>) :
     RecyclerView.Adapter<CategoriesListAdapter.ViewHolder>() {
@@ -40,8 +39,10 @@ class CategoriesListAdapter(private val dataSet: List<Category>) :
         }
 
         try {
-            val inputStream: InputStream? = viewHolder.itemView.context?.assets?.open(category.imageUrl)
-            val image = Drawable.createFromStream(inputStream, null)
+            val image =
+                viewHolder.itemView.context.assets.open(category.imageUrl).use { inputStream ->
+                    Drawable.createFromStream(inputStream, null)
+                }
             viewHolder.binding.ivCardItem.setImageDrawable(image)
         } catch (e: Exception) {
             Log.e("CategoriesListAdapter", "Error loading image: ${category.imageUrl}")
