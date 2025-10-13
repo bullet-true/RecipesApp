@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ifedorov.recipesapp.databinding.ItemRecipeBinding
 import com.ifedorov.recipesapp.model.Recipe
-import java.io.InputStream
 
 class RecipesListAdapter(private val dataSet: List<Recipe>) :
     RecyclerView.Adapter<RecipesListAdapter.ViewHolder>() {
@@ -39,9 +38,10 @@ class RecipesListAdapter(private val dataSet: List<Recipe>) :
         }
 
         try {
-            val inputStream: InputStream? =
-                viewHolder.itemView.context?.assets?.open(recipe.imageUrl)
-            val image = Drawable.createFromStream(inputStream, null)
+            val image =
+                viewHolder.itemView.context.assets.open(recipe.imageUrl).use { inputStream ->
+                    Drawable.createFromStream(inputStream, null)
+                }
             viewHolder.binding.ivRecipeCardItem.setImageDrawable(image)
         } catch (e: Exception) {
             Log.e("RecipesListAdapter", "Error loading image: ${recipe.imageUrl}")

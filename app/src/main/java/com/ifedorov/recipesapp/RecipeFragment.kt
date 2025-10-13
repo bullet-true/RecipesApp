@@ -32,7 +32,3 @@ class RecipeFragment : Fragment() {
         _binding = null
     }
 }
-
-
-
-

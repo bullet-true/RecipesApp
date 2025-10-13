@@ -11,7 +11,6 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.ifedorov.recipesapp.common.Constants
 import com.ifedorov.recipesapp.databinding.FragmentRecipesListBinding
-import java.io.InputStream
 
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentRecipesListBinding? = null
@@ -52,10 +51,10 @@ class RecipesListFragment : Fragment() {
         binding.tvCategoryHeader.contentDescription = categoryName
 
         try {
-            val inputStream: InputStream? = requireContext().assets.open(categoryImageUrl ?: "")
-            val image = Drawable.createFromStream(inputStream, null)
+            val image = requireContext().assets.open(categoryImageUrl ?: "").use { inputStream ->
+                Drawable.createFromStream(inputStream, null)
+            }
             binding.ivCategoryHeader.setImageDrawable(image)
-
         } catch (e: Exception) {
             Log.e("RecipesListFragment", "Error loading image: $categoryImageUrl")
             e.printStackTrace()
