@@ -3,11 +3,14 @@
     <dimen name="spacing_medium">16dp</dimen>
     <dimen name="spacing_small">8dp</dimen>
     <dimen name="button_spacing">2dp</dimen>
+    <dimen name="recipe_recycler_spacing">6dp</dimen>
+    <dimen name="text_spacing">4dp</dimen>
     <dimen name="corner_radius">8dp</dimen>
     <dimen name="header_layout_height">224dp</dimen>
     <dimen name="header_text_padding">10dp</dimen>
     <dimen name="image_card_item_height">130dp</dimen>
     <dimen name="image_card_recipe_item_height">100dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
 
     <dimen name="header_text_size">20sp</dimen>
     <dimen name="header_item_text_size">14sp</dimen>

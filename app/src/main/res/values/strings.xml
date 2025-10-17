@@ -4,4 +4,7 @@
     <string name="favorite">избранное</string>
     <string name="burgers">бургеры</string>
     <string name="categories_burgers_description">Рецепты всех популярных видов бургеров</string>
+    <string name="ingredients">ингредиенты</string>
+    <string name="method">способ приготовления</string>
+    <string name="method_string">%1$d. %2$s</string>
 </resources>
