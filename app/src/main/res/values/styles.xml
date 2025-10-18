@@ -38,6 +38,14 @@
         <item name="android:layout_marginBottom">0dp</item>
     </style>
 
+    <style name="StyleRecipeHeaderText" parent="StyleHeaderText">
+        <item name="android:gravity">start</item>
+        <item name="android:background">@color/white_background_color</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:textSize">@dimen/header_text_size</item>
+        <item name="android:layout_margin">@dimen/spacing_medium</item>
+    </style>
+
     <style name="StyleBodyText" parent="TextAppearance.AppCompat">
         <item name="android:background">@color/white</item>
         <item name="android:textColor">@color/black</item>
@@ -48,6 +56,17 @@
         <item name="android:textSize">@dimen/body_item_categories_text_size</item>
         <item name="android:paddingBottom">@dimen/spacing_small</item>
         <item name="android:paddingHorizontal">@dimen/spacing_small</item>
+    </style>
+
+    <style name="StyleBodyRecyclerRecipeIngredients" parent="StyleBodyText">
+        <item name="android:textSize">@dimen/header_item_text_size</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:textColor">@color/text_recipe_body_color</item>
+    </style>
+
+    <style name="StyleBodyRecyclerRecipeMethod" parent="StyleBodyText">
+        <item name="android:textSize">@dimen/header_item_text_size</item>
+        <item name="android:textColor">@color/text_recipe_body_color</item>
     </style>
 
 </resources>
