@@ -21,8 +21,11 @@ class IngredientsAdapter(private val dataSet: List<Ingredient>) :
         val ingredient = dataSet[position]
         with(viewHolder.binding) {
             tvdDescription.text = ingredient.description
-            tvQuantity.text = ingredient.quantity
-            tvUnitOfMeasure.text = ingredient.unitOfMeasure
+            tvQuantity.text = buildString {
+                append(ingredient.quantity)
+                append(" ")
+                append(ingredient.unitOfMeasure)
+            }
         }
     }
 

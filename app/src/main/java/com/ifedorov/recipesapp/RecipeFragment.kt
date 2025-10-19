@@ -77,8 +77,8 @@ class RecipeFragment : Fragment() {
             ).apply {
                 dividerThickness = resources.getDimensionPixelSize(R.dimen.divider_height)
                 dividerColor = ContextCompat.getColor(requireContext(), R.color.divider_color)
-                dividerInsetStart = resources.getDimensionPixelSize(R.dimen.recipe_recycler_spacing)
-                dividerInsetEnd = resources.getDimensionPixelSize(R.dimen.recipe_recycler_spacing)
+                dividerInsetStart = resources.getDimensionPixelSize(R.dimen.spacing_small)
+                dividerInsetEnd = resources.getDimensionPixelSize(R.dimen.spacing_small)
                 isLastItemDecorated = false
             }
 

@@ -25,17 +25,7 @@
             style="@style/StyleBodyRecyclerRecipeIngredients"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/text_spacing"
-            tools:text="100" />
-
-        <TextView
-            android:id="@+id/tvUnitOfMeasure"
-            style="@style/StyleBodyRecyclerRecipeIngredients"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/text_spacing"
-            tools:text="г" />
-
+            tools:text="100 г" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

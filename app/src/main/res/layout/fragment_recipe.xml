@@ -21,8 +21,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                tools:layout_editor_absoluteX="-47dp"
-                tools:layout_editor_absoluteY="0dp"
                 tools:src="@drawable/bcg_categories" />
 
             <TextView
@@ -33,7 +31,6 @@
                 app:layout_constraintBottom_toBottomOf="@+id/headerRecipeLayout"
                 app:layout_constraintStart_toStartOf="@+id/headerRecipeLayout"
                 tools:text="@string/burgers" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -43,7 +40,6 @@
             android:text="@string/ingredients" />
 
         <androidx.recyclerview.widget.RecyclerView
-
             android:id="@+id/rvIngredients"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -52,7 +48,6 @@
             android:padding="@dimen/recipe_recycler_spacing"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="5">
-
         </androidx.recyclerview.widget.RecyclerView>
 
         <TextView
@@ -70,7 +65,6 @@
             android:padding="@dimen/recipe_recycler_spacing"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="5">
-
         </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
