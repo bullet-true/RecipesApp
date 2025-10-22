@@ -64,6 +64,7 @@
         <item name="android:textSize">@dimen/header_item_text_size</item>
         <item name="textAllCaps">true</item>
         <item name="android:textColor">@color/text_recipe_body_color</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="StyleBodyRecyclerRecipeMethod" parent="StyleBodyText">
@@ -74,7 +75,7 @@
 
     <style name="StyleServingRecipe" parent="TextAppearance.AppCompat">
         <item name="android:background">@color/white_background_color</item>
-        <item name="android:fontFamily">@font/montserrat_alternates_semi_bold</item>
+        <item name="android:fontFamily">@font/montserrat_semi_bold</item>
         <item name="android:textSize">@dimen/serving_recipe_text_size</item>
         <item name="android:textColor">@color/text_recipe_body_color</item>
         <item name="android:layout_marginVertical">@dimen/serving_text_vertical_margin</item>
