@@ -1,31 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_small"
-    app:cardElevation="0dp">
+    android:padding="@dimen/spacing_small"
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tvdDescription"
+        style="@style/StyleBodyRecyclerRecipeIngredients"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_weight="1"
+        tools:text="Творог" />
 
-        <TextView
-            android:id="@+id/tvdDescription"
-            style="@style/StyleBodyRecyclerRecipeIngredients"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="Творог" />
-
-        <TextView
-            android:id="@+id/tvQuantity"
-            style="@style/StyleBodyRecyclerRecipeIngredients"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="100 г" />
-    </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/tvQuantity"
+        style="@style/StyleBodyRecyclerRecipeIngredients"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="100 г" />
+</LinearLayout>

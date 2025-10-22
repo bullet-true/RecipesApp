@@ -5,9 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ifedorov.recipesapp.databinding.ItemIngredientBinding
 import com.ifedorov.recipesapp.model.Ingredient
+import java.math.RoundingMode
 
 class IngredientsAdapter(private val dataSet: List<Ingredient>) :
     RecyclerView.Adapter<IngredientsAdapter.ViewHolder>() {
+
+    private var quantity = 1
 
     class ViewHolder(val binding: ItemIngredientBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -21,8 +24,16 @@ class IngredientsAdapter(private val dataSet: List<Ingredient>) :
         val ingredient = dataSet[position]
         with(viewHolder.binding) {
             tvdDescription.text = ingredient.description
+
+            val totalQuantity = ingredient.quantity.toBigDecimalOrNull()
+                ?.multiply(quantity.toBigDecimal())
+                ?.setScale(1, RoundingMode.HALF_UP)
+                ?.stripTrailingZeros()
+                ?.toPlainString()
+                ?: ingredient.quantity
+
             tvQuantity.text = buildString {
-                append(ingredient.quantity)
+                append(totalQuantity)
                 append(" ")
                 append(ingredient.unitOfMeasure)
             }
@@ -30,4 +41,9 @@ class IngredientsAdapter(private val dataSet: List<Ingredient>) :
     }
 
     override fun getItemCount(): Int = dataSet.size
+
+    fun updateIngredients(progress: Int) {
+        quantity = progress
+        notifyDataSetChanged()
+    }
 }

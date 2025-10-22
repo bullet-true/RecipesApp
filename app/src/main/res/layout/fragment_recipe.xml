@@ -39,10 +39,44 @@
             android:layout_height="wrap_content"
             android:text="@string/ingredients" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/spacing_medium"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/StyleServingRecipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/servings" />
+
+            <TextView
+                android:id="@+id/tvServingsValue"
+                style="@style/StyleServingRecipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="3" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/seekBarServings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="5"
+            android:min="1"
+            android:progress="1"
+            tools:progress="2">
+        </SeekBar>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_medium" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvIngredients"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_medium"
             android:background="@drawable/shape_rounded_recycler"
             android:padding="@dimen/recipe_recycler_spacing"
@@ -56,10 +90,14 @@
             android:layout_height="wrap_content"
             android:text="@string/method" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_medium" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMethod"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_medium"
             android:background="@drawable/shape_rounded_recycler"
             android:padding="@dimen/recipe_recycler_spacing"
