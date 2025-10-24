@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <size android:height="@dimen/seek_bar_progress_height" />
+            <solid android:color="@color/seek_bar_progress_color" />
+            <corners android:radius="@dimen/seek_bar_progress_corner_radius" />
+        </shape>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <size android:height="@dimen/seek_bar_progress_height" />
+                <solid android:color="@color/seek_bar_progress_color" />
+                <corners android:radius="@dimen/seek_bar_progress_corner_radius" />
+            </shape>
+        </clip>
+    </item>
+</layer-list>

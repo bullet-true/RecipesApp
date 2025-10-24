@@ -9,4 +9,6 @@
     <color name="text_header_color">#5F3678</color>
     <color name="text_recipe_body_color">#666666</color>
     <color name="divider_color">#F5F5F5</color>
+    <color name="seek_bar_thumb_color">#525DC0</color>
+    <color name="seek_bar_progress_color">#A1A9F9</color>
 </resources>
