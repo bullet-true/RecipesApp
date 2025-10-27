@@ -31,6 +31,18 @@
                 app:layout_constraintBottom_toBottomOf="@+id/headerRecipeLayout"
                 app:layout_constraintStart_toStartOf="@+id/headerRecipeLayout"
                 tools:text="@string/burgers" />
+
+            <ImageButton
+                android:id="@+id/imgBtnFavorite"
+                android:layout_width="@dimen/image_button_favorite_size"
+                android:layout_height="@dimen/image_button_favorite_size"
+                android:layout_margin="@dimen/spacing_medium"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/add_to_favorite"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="@id/headerRecipeLayout"
+                app:layout_constraintTop_toTopOf="@id/headerRecipeLayout"
+                tools:src="@drawable/ic_heart" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView

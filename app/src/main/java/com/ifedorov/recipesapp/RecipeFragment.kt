@@ -21,6 +21,7 @@ class RecipeFragment : Fragment() {
         get() = _binding ?: throw IllegalStateException("FragmentRecipeBinding can't be null")
 
     private var recipe: Recipe? = null
+    private var isFavorite = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,6 +66,18 @@ class RecipeFragment : Fragment() {
                 e.printStackTrace()
             }
         }
+
+        updateFavoriteIcon()
+
+        binding.imgBtnFavorite.setOnClickListener {
+            isFavorite = !isFavorite
+            updateFavoriteIcon()
+        }
+    }
+
+    private fun updateFavoriteIcon() {
+        val icon = if (isFavorite) R.drawable.ic_heart else R.drawable.ic_heart_empty
+        binding.imgBtnFavorite.setImageResource(icon)
     }
 
     private fun initRecycler() {
