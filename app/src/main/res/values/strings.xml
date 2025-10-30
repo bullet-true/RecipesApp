@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">RecipesApp</string>
+    <string name="preference_favorites_recipes">com.ifedorov.recipesapp.FAVORITES_PREFS</string>
+    <string name="saved_favorites_recipes">SAVED_FAVORITES_RECIPES</string>
     <string name="categories">категории</string>
     <string name="favorite">избранное</string>
     <string name="burgers">бургеры</string>

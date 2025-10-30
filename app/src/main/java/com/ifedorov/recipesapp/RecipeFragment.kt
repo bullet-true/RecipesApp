@@ -1,5 +1,6 @@
 package com.ifedorov.recipesapp
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -65,11 +66,26 @@ class RecipeFragment : Fragment() {
                 Log.e("RecipeFragment", "Error loading image: ${it.imageUrl}")
                 e.printStackTrace()
             }
+
+            val favorites = getFavorites()
+            isFavorite = favorites.contains(it.id.toString())
         }
 
         updateFavoriteIcon()
 
         binding.imgBtnFavorite.setOnClickListener {
+            recipe?.let {
+                val favorites = getFavorites()
+
+                if (isFavorite) {
+                    favorites.remove(it.id.toString())
+                } else {
+                    favorites.add(it.id.toString())
+                }
+
+                saveFavorites(favorites)
+            }
+
             isFavorite = !isFavorite
             updateFavoriteIcon()
         }
@@ -78,6 +94,30 @@ class RecipeFragment : Fragment() {
     private fun updateFavoriteIcon() {
         val icon = if (isFavorite) R.drawable.ic_heart else R.drawable.ic_heart_empty
         binding.imgBtnFavorite.setImageResource(icon)
+    }
+
+    private fun saveFavorites(favoritesSet: Set<String>) {
+        val sharedPrefs = requireContext().getSharedPreferences(
+            getString(R.string.preference_favorites_recipes),
+            Context.MODE_PRIVATE
+        )
+        with(sharedPrefs.edit()) {
+            putStringSet(getString(R.string.saved_favorites_recipes), favoritesSet)
+            apply()
+        }
+    }
+
+    private fun getFavorites(): MutableSet<String> {
+        val sharedPrefs = requireContext().getSharedPreferences(
+            getString(R.string.preference_favorites_recipes),
+            Context.MODE_PRIVATE
+        )
+        val savedSet = sharedPrefs.getStringSet(
+            getString(R.string.saved_favorites_recipes),
+            emptySet()
+        )
+
+        return HashSet(savedSet)
     }
 
     private fun initRecycler() {
