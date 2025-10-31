@@ -86,4 +86,11 @@
         <item name="android:thumb">@drawable/shape_seekbar_thumb</item>
     </style>
 
+    <style name="StyleEmptyFavorites" parent="TextAppearance.AppCompat">
+        <item name="android:background">@color/white_background_color</item>
+        <item name="android:textColor">@color/text_recipe_body_color</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="android:textSize">@dimen/serving_recipe_text_size</item>
+    </style>
+
 </resources>
