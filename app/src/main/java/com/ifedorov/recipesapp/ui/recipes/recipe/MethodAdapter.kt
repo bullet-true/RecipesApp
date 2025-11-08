@@ -1,8 +1,9 @@
-package com.ifedorov.recipesapp
+package com.ifedorov.recipesapp.ui.recipes.recipe
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.ifedorov.recipesapp.R
 import com.ifedorov.recipesapp.databinding.ItemMethodBinding
 
 class MethodAdapter(private val dataSet: List<String>) :

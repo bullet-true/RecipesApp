@@ -1,17 +1,20 @@
-package com.ifedorov.recipesapp
+package com.ifedorov.recipesapp.ui.recipes.recipesList
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.ifedorov.recipesapp.R
 import com.ifedorov.recipesapp.common.Constants
+import com.ifedorov.recipesapp.data.STUB
 import com.ifedorov.recipesapp.databinding.FragmentRecipesListBinding
+import com.ifedorov.recipesapp.ui.recipes.recipe.RecipeFragment
 
 class RecipesListFragment : Fragment() {
     private var _binding: FragmentRecipesListBinding? = null

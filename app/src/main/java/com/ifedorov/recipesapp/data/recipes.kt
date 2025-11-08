@@ -1,4 +1,4 @@
-package com.ifedorov.recipesapp
+package com.ifedorov.recipesapp.data
 
 import com.ifedorov.recipesapp.model.Category
 import com.ifedorov.recipesapp.model.Ingredient

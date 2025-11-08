@@ -1,4 +1,4 @@
-package com.ifedorov.recipesapp
+package com.ifedorov.recipesapp.ui.categories
 
 import android.graphics.drawable.Drawable
 import android.util.Log
