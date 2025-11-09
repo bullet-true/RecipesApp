@@ -1,4 +1,4 @@
-package com.ifedorov.recipesapp
+package com.ifedorov.recipesapp.ui.recipes.favorites
 
 import android.content.Context
 import android.os.Bundle
@@ -10,8 +10,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.ifedorov.recipesapp.R
 import com.ifedorov.recipesapp.common.Constants
+import com.ifedorov.recipesapp.data.STUB
 import com.ifedorov.recipesapp.databinding.FragmentFavoritesBinding
+import com.ifedorov.recipesapp.ui.recipes.recipe.RecipeFragment
+import com.ifedorov.recipesapp.ui.recipes.recipesList.RecipesListAdapter
 
 class FavoritesFragment : Fragment() {
     private var _binding: FragmentFavoritesBinding? = null
