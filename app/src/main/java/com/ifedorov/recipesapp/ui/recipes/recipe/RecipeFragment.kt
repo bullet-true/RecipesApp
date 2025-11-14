@@ -1,8 +1,6 @@
 package com.ifedorov.recipesapp.ui.recipes.recipe
 
-import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,7 +24,6 @@ class RecipeFragment : Fragment() {
     private val viewModel: RecipeViewModel by viewModels()
 
     private var recipe: Recipe? = null
-    private var isFavorite = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,15 +38,8 @@ class RecipeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            Log.i("!!!", "isFavorite = ${state.isFavorite}")
-        }
-
-        recipe = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requireArguments().getParcelable(Constants.ARG_RECIPE, Recipe::class.java)
-        } else {
-            requireArguments().getParcelable(Constants.ARG_RECIPE)
-        }
+        val recipeId = requireArguments().getInt(Constants.ARG_RECIPE_ID)
+        viewModel.loadRecipe(recipeId)
 
         initUI()
         initRecycler()
@@ -61,71 +51,34 @@ class RecipeFragment : Fragment() {
     }
 
     private fun initUI() {
-        recipe?.let {
-            binding.tvRecipeHeader.text = it.title
-            binding.ivRecipeHeader.contentDescription = it.title
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            state.recipe?.let { recipe ->
+                binding.tvRecipeHeader.text = recipe.title
+                binding.ivRecipeHeader.contentDescription = recipe.title
 
-            try {
-                val image = requireContext().assets.open(it.imageUrl).use { inputStream ->
-                    Drawable.createFromStream(inputStream, null)
-                }
-                binding.ivRecipeHeader.setImageDrawable(image)
-            } catch (e: Exception) {
-                Log.e("RecipeFragment", "Error loading image: ${it.imageUrl}")
-                e.printStackTrace()
-            }
+                try {
+                    val image = requireContext().assets.open(recipe.imageUrl).use { inputStream ->
+                        Drawable.createFromStream(inputStream, null)
+                    }
+                    binding.ivRecipeHeader.setImageDrawable(image)
 
-            val favorites = getFavorites()
-            isFavorite = favorites.contains(it.id.toString())
-        }
-
-        updateFavoriteIcon()
-
-        binding.imgBtnFavorite.setOnClickListener {
-            recipe?.let {
-                val favorites = getFavorites()
-
-                if (isFavorite) {
-                    favorites.remove(it.id.toString())
-                } else {
-                    favorites.add(it.id.toString())
+                } catch (e: Exception) {
+                    Log.e("RecipeFragment", "Error loading image: ${recipe.imageUrl}")
+                    e.printStackTrace()
                 }
 
-                saveFavorites(favorites)
             }
+            updateFavoriteIcon(state.isFavorite)
 
-            isFavorite = !isFavorite
-            updateFavoriteIcon()
+            binding.imgBtnFavorite.setOnClickListener {
+                viewModel.onFavoritesClicked()
+            }
         }
     }
 
-    private fun updateFavoriteIcon() {
+    private fun updateFavoriteIcon(isFavorite: Boolean) {
         val icon = if (isFavorite) R.drawable.ic_heart else R.drawable.ic_heart_empty
         binding.imgBtnFavorite.setImageResource(icon)
-    }
-
-    private fun saveFavorites(favoritesSet: Set<String>) {
-        val sharedPrefs = requireContext().getSharedPreferences(
-            getString(R.string.preference_favorites_recipes),
-            Context.MODE_PRIVATE
-        )
-        with(sharedPrefs.edit()) {
-            putStringSet(getString(R.string.saved_favorites_recipes), favoritesSet)
-            apply()
-        }
-    }
-
-    private fun getFavorites(): MutableSet<String> {
-        val sharedPrefs = requireContext().getSharedPreferences(
-            getString(R.string.preference_favorites_recipes),
-            Context.MODE_PRIVATE
-        )
-        val savedSet = sharedPrefs.getStringSet(
-            getString(R.string.saved_favorites_recipes),
-            emptySet()
-        )
-
-        return HashSet(savedSet)
     }
 
     private fun initRecycler() {
