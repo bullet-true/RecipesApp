@@ -23,8 +23,6 @@ class RecipeFragment : Fragment() {
 
     private val viewModel: RecipeViewModel by viewModels()
 
-    private var recipe: Recipe? = null
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,7 +40,6 @@ class RecipeFragment : Fragment() {
         viewModel.loadRecipe(recipeId)
 
         initUI()
-        initRecycler()
     }
 
     override fun onDestroyView() {
@@ -68,6 +65,8 @@ class RecipeFragment : Fragment() {
                 }
 
             }
+
+            initRecycler(state.recipe)
             updateFavoriteIcon(state.isFavorite)
 
             binding.imgBtnFavorite.setOnClickListener {
@@ -81,7 +80,7 @@ class RecipeFragment : Fragment() {
         binding.imgBtnFavorite.setImageResource(icon)
     }
 
-    private fun initRecycler() {
+    private fun initRecycler(recipe: Recipe?) {
         recipe?.let {
             val ingredientsAdapter = IngredientsAdapter(it.ingredients)
             binding.rvIngredients.adapter = ingredientsAdapter

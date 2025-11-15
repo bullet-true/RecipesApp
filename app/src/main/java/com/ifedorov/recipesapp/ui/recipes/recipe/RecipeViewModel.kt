@@ -19,7 +19,7 @@ data class RecipeUiState(
 class RecipeViewModel(application: Application) : AndroidViewModel(application) {
     private val appContext: Context = application.applicationContext
 
-    private val _state = MutableLiveData<RecipeUiState>()
+    private val _state = MutableLiveData<RecipeUiState>().apply { value = RecipeUiState() }
     val state: LiveData<RecipeUiState> get() = _state
 
     fun loadRecipe(recipeId: Int) {
@@ -29,8 +29,7 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
 
         _state.value = _state.value?.copy(
             recipe = recipe,
-            isFavorite = getFavorites().contains(recipeId.toString()),
-            servings = _state.value?.servings ?: 1
+            isFavorite = getFavorites().contains(recipeId.toString())
         )
     }
 
