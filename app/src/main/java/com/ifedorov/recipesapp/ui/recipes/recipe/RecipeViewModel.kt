@@ -29,7 +29,8 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
 
         _state.value = _state.value?.copy(
             recipe = recipe,
-            isFavorite = getFavorites().contains(recipeId.toString())
+            isFavorite = getFavorites().contains(recipeId.toString()),
+            servings = _state.value?.servings ?: 1
         )
     }
 

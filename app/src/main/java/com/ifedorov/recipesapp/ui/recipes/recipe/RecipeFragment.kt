@@ -66,7 +66,9 @@ class RecipeFragment : Fragment() {
 
             }
 
-            initRecycler(state.recipe)
+            if (binding.rvIngredients.adapter == null) {
+                initRecycler(state.recipe)
+            }
             updateFavoriteIcon(state.isFavorite)
 
             binding.imgBtnFavorite.setOnClickListener {
@@ -100,7 +102,8 @@ class RecipeFragment : Fragment() {
             binding.rvIngredients.addItemDecoration(divider)
             binding.rvMethod.addItemDecoration(divider)
 
-            var currentServings = binding.seekBarServings.progress
+            var currentServings = viewModel.state.value?.servings ?: 1
+            binding.seekBarServings.progress = currentServings
             binding.tvServingsValue.text = currentServings.toString()
 
             binding.seekBarServings.setOnSeekBarChangeListener(object :
