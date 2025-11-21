@@ -1,8 +1,6 @@
 package com.ifedorov.recipesapp.ui.recipes.recipe
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,18 +50,7 @@ class RecipeFragment : Fragment() {
             state.recipe?.let { recipe ->
                 binding.tvRecipeHeader.text = recipe.title
                 binding.ivRecipeHeader.contentDescription = recipe.title
-
-                try {
-                    val image = requireContext().assets.open(recipe.imageUrl).use { inputStream ->
-                        Drawable.createFromStream(inputStream, null)
-                    }
-                    binding.ivRecipeHeader.setImageDrawable(image)
-
-                } catch (e: Exception) {
-                    Log.e("RecipeFragment", "Error loading image: ${recipe.imageUrl}")
-                    e.printStackTrace()
-                }
-
+                binding.ivRecipeHeader.setImageDrawable(state.recipeImage)
             }
 
             if (binding.rvIngredients.adapter == null) {
