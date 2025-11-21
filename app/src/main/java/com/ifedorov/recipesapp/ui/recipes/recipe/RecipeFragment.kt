@@ -20,6 +20,7 @@ class RecipeFragment : Fragment() {
         get() = _binding ?: throw IllegalStateException("FragmentRecipeBinding can't be null")
 
     private val viewModel: RecipeViewModel by viewModels()
+    private var ingredientsAdapter: IngredientsAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,7 +57,11 @@ class RecipeFragment : Fragment() {
             if (binding.rvIngredients.adapter == null) {
                 initRecycler(state.recipe)
             }
+
+            ingredientsAdapter?.updateIngredients(state.servings)
             updateFavoriteIcon(state.isFavorite)
+            binding.seekBarServings.progress = state.servings
+            binding.tvServingsValue.text = state.servings.toString()
 
             binding.imgBtnFavorite.setOnClickListener {
                 viewModel.onFavoritesClicked()
@@ -71,7 +76,7 @@ class RecipeFragment : Fragment() {
 
     private fun initRecycler(recipe: Recipe?) {
         recipe?.let {
-            val ingredientsAdapter = IngredientsAdapter(it.ingredients)
+            ingredientsAdapter = IngredientsAdapter(it.ingredients)
             binding.rvIngredients.adapter = ingredientsAdapter
             binding.rvMethod.adapter = MethodAdapter(it.method)
 
@@ -89,10 +94,6 @@ class RecipeFragment : Fragment() {
             binding.rvIngredients.addItemDecoration(divider)
             binding.rvMethod.addItemDecoration(divider)
 
-            var currentServings = viewModel.state.value?.servings ?: 1
-            binding.seekBarServings.progress = currentServings
-            binding.tvServingsValue.text = currentServings.toString()
-
             binding.seekBarServings.setOnSeekBarChangeListener(object :
                 SeekBar.OnSeekBarChangeListener {
 
@@ -101,13 +102,10 @@ class RecipeFragment : Fragment() {
                     progress: Int,
                     fromUser: Boolean
                 ) {
-                    currentServings = progress
-                    binding.tvServingsValue.text = currentServings.toString()
-                    ingredientsAdapter.updateIngredients(currentServings)
+                    viewModel.updateServings(progress)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             })
         }
