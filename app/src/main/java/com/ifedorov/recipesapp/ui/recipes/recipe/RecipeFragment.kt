@@ -83,26 +83,26 @@ class RecipeFragment : Fragment() {
             }
 
             updateFavoriteIcon(state.isFavorite)
+        }
 
-            binding.imgBtnFavorite.setOnClickListener {
-                viewModel.onFavoritesClicked()
+        binding.imgBtnFavorite.setOnClickListener {
+            viewModel.onFavoritesClicked()
+        }
+
+        binding.seekBarServings.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                viewModel.updateServings(progress)
             }
 
-            binding.seekBarServings.setOnSeekBarChangeListener(object :
-                SeekBar.OnSeekBarChangeListener {
-
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    viewModel.updateServings(progress)
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-            })
-        }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 
     private fun updateFavoriteIcon(isFavorite: Boolean) {
