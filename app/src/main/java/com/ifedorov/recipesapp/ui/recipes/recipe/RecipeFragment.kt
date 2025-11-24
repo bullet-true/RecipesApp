@@ -12,7 +12,6 @@ import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.ifedorov.recipesapp.R
 import com.ifedorov.recipesapp.common.Constants
 import com.ifedorov.recipesapp.databinding.FragmentRecipeBinding
-import com.ifedorov.recipesapp.model.Recipe
 
 class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
@@ -20,6 +19,8 @@ class RecipeFragment : Fragment() {
         get() = _binding ?: throw IllegalStateException("FragmentRecipeBinding can't be null")
 
     private val viewModel: RecipeViewModel by viewModels()
+    private var ingredientsAdapter: IngredientsAdapter? = null
+    private var methodAdapter: MethodAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,65 +52,61 @@ class RecipeFragment : Fragment() {
                 binding.tvRecipeHeader.text = recipe.title
                 binding.ivRecipeHeader.contentDescription = recipe.title
                 binding.ivRecipeHeader.setImageDrawable(state.recipeImage)
+
+                if (binding.rvIngredients.adapter == null && binding.rvMethod.adapter == null) {
+                    ingredientsAdapter = IngredientsAdapter(recipe.ingredients)
+                    binding.rvIngredients.adapter = ingredientsAdapter
+
+                    methodAdapter = MethodAdapter(recipe.method)
+                    binding.rvMethod.adapter = methodAdapter
+
+                    val divider = MaterialDividerItemDecoration(
+                        requireContext(),
+                        MaterialDividerItemDecoration.VERTICAL
+                    ).apply {
+                        dividerThickness = resources.getDimensionPixelSize(R.dimen.divider_height)
+                        dividerColor =
+                            ContextCompat.getColor(requireContext(), R.color.divider_color)
+                        dividerInsetStart = resources.getDimensionPixelSize(R.dimen.spacing_small)
+                        dividerInsetEnd = resources.getDimensionPixelSize(R.dimen.spacing_small)
+                        isLastItemDecorated = false
+                    }
+
+                    binding.rvIngredients.addItemDecoration(divider)
+                    binding.rvMethod.addItemDecoration(divider)
+                }
+
+                binding.seekBarServings.progress = state.servings
+                binding.tvServingsValue.text = state.servings.toString()
+
+                ingredientsAdapter?.updateIngredients(state.servings)
             }
 
-            if (binding.rvIngredients.adapter == null) {
-                initRecycler(state.recipe)
-            }
             updateFavoriteIcon(state.isFavorite)
-
-            binding.imgBtnFavorite.setOnClickListener {
-                viewModel.onFavoritesClicked()
-            }
         }
+
+        binding.imgBtnFavorite.setOnClickListener {
+            viewModel.onFavoritesClicked()
+        }
+
+        binding.seekBarServings.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                viewModel.updateServings(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 
     private fun updateFavoriteIcon(isFavorite: Boolean) {
         val icon = if (isFavorite) R.drawable.ic_heart else R.drawable.ic_heart_empty
         binding.imgBtnFavorite.setImageResource(icon)
-    }
-
-    private fun initRecycler(recipe: Recipe?) {
-        recipe?.let {
-            val ingredientsAdapter = IngredientsAdapter(it.ingredients)
-            binding.rvIngredients.adapter = ingredientsAdapter
-            binding.rvMethod.adapter = MethodAdapter(it.method)
-
-            val divider = MaterialDividerItemDecoration(
-                requireContext(),
-                MaterialDividerItemDecoration.VERTICAL
-            ).apply {
-                dividerThickness = resources.getDimensionPixelSize(R.dimen.divider_height)
-                dividerColor = ContextCompat.getColor(requireContext(), R.color.divider_color)
-                dividerInsetStart = resources.getDimensionPixelSize(R.dimen.spacing_small)
-                dividerInsetEnd = resources.getDimensionPixelSize(R.dimen.spacing_small)
-                isLastItemDecorated = false
-            }
-
-            binding.rvIngredients.addItemDecoration(divider)
-            binding.rvMethod.addItemDecoration(divider)
-
-            var currentServings = viewModel.state.value?.servings ?: 1
-            binding.seekBarServings.progress = currentServings
-            binding.tvServingsValue.text = currentServings.toString()
-
-            binding.seekBarServings.setOnSeekBarChangeListener(object :
-                SeekBar.OnSeekBarChangeListener {
-
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    currentServings = progress
-                    binding.tvServingsValue.text = currentServings.toString()
-                    ingredientsAdapter.updateIngredients(currentServings)
-                }
-
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-            })
-        }
     }
 }

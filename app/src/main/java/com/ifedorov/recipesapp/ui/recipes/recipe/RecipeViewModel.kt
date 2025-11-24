@@ -68,6 +68,10 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
         _state.value = _state.value?.copy(isFavorite = !isFavorite)
     }
 
+    fun updateServings(count: Int) {
+        _state.value = _state.value?.copy(servings = count)
+    }
+
     private fun getFavorites(): MutableSet<String> {
         val sharedPrefs = appContext.getSharedPreferences(
             appContext.getString(R.string.preference_favorites_recipes),
