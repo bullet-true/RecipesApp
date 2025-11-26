@@ -7,7 +7,7 @@ import com.ifedorov.recipesapp.databinding.ItemIngredientBinding
 import com.ifedorov.recipesapp.model.Ingredient
 import java.math.RoundingMode
 
-class IngredientsAdapter(private val dataSet: List<Ingredient>) :
+class IngredientsAdapter(var dataSet: List<Ingredient>) :
     RecyclerView.Adapter<IngredientsAdapter.ViewHolder>() {
 
     private var quantity = 1
