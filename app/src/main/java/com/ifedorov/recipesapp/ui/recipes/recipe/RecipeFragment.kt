@@ -71,13 +71,8 @@ class RecipeFragment : Fragment() {
                 binding.ivRecipeHeader.contentDescription = recipe.title
                 binding.ivRecipeHeader.setImageDrawable(state.recipeImage)
 
-                if (ingredientsAdapter.dataSet.isEmpty()) {
-                    ingredientsAdapter.dataSet = recipe.ingredients
-                }
-
-                if (methodAdapter.dataSet.isEmpty()) {
-                    methodAdapter.dataSet = recipe.method
-                }
+                ingredientsAdapter.dataSet = recipe.ingredients
+                methodAdapter.dataSet = recipe.method
 
                 binding.seekBarServings.progress = state.servings
                 binding.tvServingsValue.text = state.servings.toString()

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ifedorov.recipesapp.databinding.ItemCategoryBinding
 import com.ifedorov.recipesapp.model.Category
 
-class CategoriesListAdapter(private val dataSet: List<Category>) :
+class CategoriesListAdapter(var dataSet: List<Category>) :
     RecyclerView.Adapter<CategoriesListAdapter.ViewHolder>() {
 
     interface OnItemClickListener {

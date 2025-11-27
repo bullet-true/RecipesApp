@@ -8,9 +8,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import androidx.fragment.app.viewModels
 import com.ifedorov.recipesapp.R
 import com.ifedorov.recipesapp.common.Constants
-import com.ifedorov.recipesapp.data.STUB
 import com.ifedorov.recipesapp.databinding.FragmentListCategoriesBinding
 import com.ifedorov.recipesapp.ui.recipes.recipesList.RecipesListFragment
 
@@ -19,6 +19,9 @@ class CategoriesListFragment : Fragment() {
     private val binding
         get() = _binding
             ?: throw IllegalStateException("FragmentListCategoriesBinding can't be null")
+
+    private val viewModel: CategoriesListViewModel by viewModels()
+    private var categoriesListAdapter = CategoriesListAdapter(emptyList())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +35,20 @@ class CategoriesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecycler()
+
+        viewModel.loadCategoriesList()
+        binding.rvCategories.adapter = categoriesListAdapter
+
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            categoriesListAdapter.dataSet = state
+        }
+
+        categoriesListAdapter.setOnItemClickListener(object :
+            CategoriesListAdapter.OnItemClickListener {
+            override fun onItemClick(categoryId: Int) {
+                openRecipesByCategoryId(categoryId)
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -40,20 +56,8 @@ class CategoriesListFragment : Fragment() {
         _binding = null
     }
 
-    private fun initRecycler() {
-        val categoriesListAdapter = CategoriesListAdapter(STUB.getCategories())
-
-        categoriesListAdapter.setOnItemClickListener(object : CategoriesListAdapter.OnItemClickListener {
-            override fun onItemClick(categoryId: Int) {
-                openRecipesByCategoryId(categoryId)
-            }
-        })
-
-        binding.rvCategories.adapter = categoriesListAdapter
-    }
-
     private fun openRecipesByCategoryId(categoryId: Int) {
-        val category = STUB.getCategories().find { it.id == categoryId }
+        val category = viewModel.state.value?.find { it.id == categoryId }
         val categoryName = category?.title
         val categoryImageUrl = category?.imageUrl
 
