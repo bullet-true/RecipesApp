@@ -41,9 +41,9 @@ class FavoritesFragment : Fragment() {
         binding.rvFavorites.adapter = favoritesAdapter
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
-            binding.rvFavorites.isVisible = state.isNotEmpty()
-            binding.tvEmptyFavorites.isVisible = state.isEmpty()
-            favoritesAdapter.dataSet = state
+            binding.rvFavorites.isVisible = state.favoritesRecipes.isNotEmpty()
+            binding.tvEmptyFavorites.isVisible = state.favoritesRecipes.isEmpty()
+            favoritesAdapter.dataSet = state.favoritesRecipes
         }
 
         favoritesAdapter.setOnItemClickListener(object : RecipesListAdapter.OnItemClickListener {

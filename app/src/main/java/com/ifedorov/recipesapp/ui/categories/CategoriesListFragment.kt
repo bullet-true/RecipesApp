@@ -40,7 +40,7 @@ class CategoriesListFragment : Fragment() {
         binding.rvCategories.adapter = categoriesListAdapter
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
-            categoriesListAdapter.dataSet = state
+            categoriesListAdapter.dataSet = state.categoriesList
         }
 
         categoriesListAdapter.setOnItemClickListener(object :
@@ -57,7 +57,7 @@ class CategoriesListFragment : Fragment() {
     }
 
     private fun openRecipesByCategoryId(categoryId: Int) {
-        val category = viewModel.state.value?.find { it.id == categoryId }
+        val category = viewModel.state.value?.categoriesList?.find { it.id == categoryId }
         val categoryName = category?.title
         val categoryImageUrl = category?.imageUrl
 

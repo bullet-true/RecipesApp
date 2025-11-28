@@ -14,6 +14,7 @@ data class RecipesListUiState(
     val categoryId: Int = 0,
     val categoryName: String? = null,
     val categoryImage: Drawable? = null,
+    val isLoading: Boolean = false,
     val recipeList: List<Recipe> =  emptyList()
 )
 
