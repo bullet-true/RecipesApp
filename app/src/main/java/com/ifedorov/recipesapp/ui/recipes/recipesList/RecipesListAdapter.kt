@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ifedorov.recipesapp.databinding.ItemRecipeBinding
 import com.ifedorov.recipesapp.model.Recipe
 
-class RecipesListAdapter(private val dataSet: List<Recipe>) :
+class RecipesListAdapter(var dataSet: List<Recipe>) :
     RecyclerView.Adapter<RecipesListAdapter.ViewHolder>() {
 
     interface OnItemClickListener {

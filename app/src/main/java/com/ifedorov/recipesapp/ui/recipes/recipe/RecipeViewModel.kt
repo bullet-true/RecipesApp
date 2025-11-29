@@ -39,7 +39,7 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
             } catch (e: Exception) {
                 Log.e(
                     "RecipeViewModel",
-                    "Error loading image in loadRecipe() function: ${it.imageUrl} "
+                    "Error loading image in loadRecipe() function: ${it.imageUrl}"
                 )
                 e.printStackTrace()
             }
