@@ -12,10 +12,11 @@ import com.ifedorov.recipesapp.model.Recipe
 
 data class RecipesListUiState(
     val categoryId: Int = 0,
-    val categoryName: String? = null,
+    val categoryTitle: String? = null,
+    val categoryDescription: String? = null,
     val categoryImage: Drawable? = null,
     val isLoading: Boolean = false,
-    val recipeList: List<Recipe> =  emptyList()
+    val recipeList: List<Recipe> = emptyList()
 )
 
 class RecipesListViewModel(application: Application) : AndroidViewModel(application) {
@@ -25,7 +26,12 @@ class RecipesListViewModel(application: Application) : AndroidViewModel(applicat
         .apply { value = RecipesListUiState() }
     val state: LiveData<RecipesListUiState> get() = _state
 
-    fun loadRecipesList(categoryId: Int, categoryName: String?, categoryImageUrl: String?) {
+    fun loadRecipesList(
+        categoryId: Int,
+        categoryTitle: String?,
+        categoryDescription: String?,
+        categoryImageUrl: String?
+    ) {
         val recipesList = STUB.getRecipesByCategoryId(categoryId)
         var categoryImage: Drawable? = null
 
@@ -43,7 +49,8 @@ class RecipesListViewModel(application: Application) : AndroidViewModel(applicat
 
         _state.value = _state.value?.copy(
             categoryId = categoryId,
-            categoryName = categoryName,
+            categoryTitle = categoryTitle,
+            categoryDescription = categoryDescription,
             categoryImage = categoryImage,
             recipeList = recipesList
         )

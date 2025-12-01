@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
+import androidx.navigation.navOptions
 import com.ifedorov.recipesapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -27,11 +28,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnCategory.setOnClickListener {
-            findNavController(R.id.nav_host_fragment).navigate(R.id.categoriesListFragment)
+            val options = navOptions {
+                anim {
+                    enter = R.anim.from_left
+                    exit = R.anim.to_right
+                    popEnter = R.anim.from_right
+                    popExit = R.anim.to_left
+                }
+                launchSingleTop = true
+            }
+
+            findNavController(R.id.nav_host_fragment)
+                .navigate(R.id.categoriesListFragment, null, options)
         }
 
         binding.btnFavorite.setOnClickListener {
-            findNavController(R.id.nav_host_fragment).navigate(R.id.favoritesFragment)
+            val options = navOptions {
+                anim {
+                    enter = R.anim.from_right
+                    exit = R.anim.to_left
+                    popEnter = R.anim.from_left
+                    popExit = R.anim.to_right
+                }
+                launchSingleTop = true
+            }
+
+            findNavController(R.id.nav_host_fragment)
+                .navigate(R.id.favoritesFragment, null, options)
         }
     }
 }
