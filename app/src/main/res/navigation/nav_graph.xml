@@ -11,10 +11,18 @@
         tools:layout="@layout/fragment_list_categories" >
         <action
             android:id="@+id/action_categoriesListFragment_to_recipesListFragment"
-            app:destination="@id/recipesListFragment" />
+            app:destination="@id/recipesListFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
         <action
             android:id="@+id/action_categoriesListFragment_to_favoritesFragment"
-            app:destination="@id/favoritesFragment" />
+            app:destination="@id/favoritesFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/recipesListFragment"
@@ -23,10 +31,17 @@
         tools:layout="@layout/fragment_recipes_list" >
         <action
             android:id="@+id/action_recipesListFragment_to_recipeFragment"
-            app:destination="@id/recipeFragment" />
+            app:destination="@id/recipeFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
         <action
             android:id="@+id/action_recipesListFragment_to_categoriesListFragment"
             app:destination="@id/categoriesListFragment" />
+        <argument
+            android:name="category"
+            app:argType="com.ifedorov.recipesapp.model.Category" />
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"
@@ -50,7 +65,11 @@
         tools:layout="@layout/fragment_favorites" >
         <action
             android:id="@+id/action_favoritesFragment_to_recipeFragment"
-            app:destination="@id/recipeFragment" />
+            app:destination="@id/recipeFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
         <action
             android:id="@+id/action_favoritesFragment_to_categoriesListFragment"
             app:destination="@id/categoriesListFragment" />

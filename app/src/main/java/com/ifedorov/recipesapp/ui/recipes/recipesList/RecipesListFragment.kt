@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.ifedorov.recipesapp.common.Constants
+import androidx.navigation.fragment.navArgs
 import com.ifedorov.recipesapp.databinding.FragmentRecipesListBinding
 
 class RecipesListFragment : Fragment() {
@@ -17,6 +17,7 @@ class RecipesListFragment : Fragment() {
 
     private val viewModel: RecipesListViewModel by viewModels()
     private var recipesListAdapter = RecipesListAdapter(emptyList())
+    private val args: RecipesListFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,11 +31,9 @@ class RecipesListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val categoryId = requireArguments().getInt(Constants.ARG_CATEGORY_ID)
-        val categoryName = requireArguments().getString(Constants.ARG_CATEGORY_NAME)
-        val categoryImageUrl = requireArguments().getString(Constants.ARG_CATEGORY_IMAGE_URL)
+        val category = args.category
+        viewModel.loadRecipesList(category)
 
-        viewModel.loadRecipesList(categoryId, categoryName, categoryImageUrl)
         initUI()
     }
 
@@ -48,8 +47,8 @@ class RecipesListFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.ivCategoryHeader.setImageDrawable(state.categoryImage)
-            binding.tvCategoryHeader.text = state.categoryName ?: ""
-            binding.tvCategoryHeader.contentDescription = state.categoryName ?: ""
+            binding.tvCategoryHeader.text = state.category?.title ?: ""
+            binding.tvCategoryHeader.contentDescription = state.category?.title ?: ""
             recipesListAdapter.dataSet = state.recipeList
         }
 
@@ -61,7 +60,9 @@ class RecipesListFragment : Fragment() {
     }
 
     private fun openRecipeByRecipeId(recipeId: Int) {
-        val action = RecipesListFragmentDirections.actionRecipesListFragmentToRecipeFragment(recipeId)
+        val action =
+            RecipesListFragmentDirections.actionRecipesListFragmentToRecipeFragment(recipeId)
+
         findNavController().navigate(action)
     }
 }
