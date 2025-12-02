@@ -35,11 +35,12 @@ class MainActivity : AppCompatActivity() {
                     popEnter = R.anim.from_right
                     popExit = R.anim.to_left
                 }
-                launchSingleTop = true
             }
 
-            findNavController(R.id.nav_host_fragment)
-                .navigate(R.id.categoriesListFragment, null, options)
+            val navController = findNavController(R.id.nav_host_fragment)
+            if (navController.currentDestination?.id != R.id.categoriesListFragment) {
+                navController.navigate(R.id.categoriesListFragment, null, options)
+            }
         }
 
         binding.btnFavorite.setOnClickListener {
@@ -50,11 +51,12 @@ class MainActivity : AppCompatActivity() {
                     popEnter = R.anim.from_left
                     popExit = R.anim.to_right
                 }
-                launchSingleTop = true
             }
 
-            findNavController(R.id.nav_host_fragment)
-                .navigate(R.id.favoritesFragment, null, options)
+            val navController = findNavController(R.id.nav_host_fragment)
+            if (navController.currentDestination?.id != R.id.favoritesFragment) {
+                navController.navigate(R.id.favoritesFragment, null, options)
+            }
         }
     }
 }

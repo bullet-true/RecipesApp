@@ -8,12 +8,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ifedorov.recipesapp.data.STUB
+import com.ifedorov.recipesapp.model.Category
 import com.ifedorov.recipesapp.model.Recipe
 
 data class RecipesListUiState(
-    val categoryId: Int = 0,
-    val categoryTitle: String? = null,
-    val categoryDescription: String? = null,
+    val category: Category? = null,
     val categoryImage: Drawable? = null,
     val isLoading: Boolean = false,
     val recipeList: List<Recipe> = emptyList()
@@ -26,31 +25,24 @@ class RecipesListViewModel(application: Application) : AndroidViewModel(applicat
         .apply { value = RecipesListUiState() }
     val state: LiveData<RecipesListUiState> get() = _state
 
-    fun loadRecipesList(
-        categoryId: Int,
-        categoryTitle: String?,
-        categoryDescription: String?,
-        categoryImageUrl: String?
-    ) {
-        val recipesList = STUB.getRecipesByCategoryId(categoryId)
+    fun loadRecipesList(category: Category) {
+        val recipesList = STUB.getRecipesByCategoryId(category.id)
         var categoryImage: Drawable? = null
 
         try {
-            categoryImage = appContext.assets.open(categoryImageUrl ?: "").use { inputStream ->
+            categoryImage = appContext.assets.open(category.imageUrl).use { inputStream ->
                 Drawable.createFromStream(inputStream, null)
             }
         } catch (e: Exception) {
             Log.e(
                 "RecipesListViewModel",
-                "Error loading image in loadRecipesList() function: $categoryImageUrl"
+                "Error loading image in loadRecipesList() function: ${category.imageUrl}"
             )
             e.printStackTrace()
         }
 
         _state.value = _state.value?.copy(
-            categoryId = categoryId,
-            categoryTitle = categoryTitle,
-            categoryDescription = categoryDescription,
+            category = category,
             categoryImage = categoryImage,
             recipeList = recipesList
         )

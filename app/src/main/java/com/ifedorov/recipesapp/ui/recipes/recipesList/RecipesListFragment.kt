@@ -32,12 +32,7 @@ class RecipesListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val category = args.category
-        viewModel.loadRecipesList(
-            category.id,
-            category.title,
-            category.description,
-            category.imageUrl
-        )
+        viewModel.loadRecipesList(category)
 
         initUI()
     }
@@ -52,8 +47,8 @@ class RecipesListFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.ivCategoryHeader.setImageDrawable(state.categoryImage)
-            binding.tvCategoryHeader.text = state.categoryTitle ?: ""
-            binding.tvCategoryHeader.contentDescription = state.categoryTitle ?: ""
+            binding.tvCategoryHeader.text = state.category?.title ?: ""
+            binding.tvCategoryHeader.contentDescription = state.category?.title ?: ""
             recipesListAdapter.dataSet = state.recipeList
         }
 
