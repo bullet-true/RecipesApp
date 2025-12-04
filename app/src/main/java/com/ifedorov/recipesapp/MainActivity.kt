@@ -13,12 +13,16 @@ import com.ifedorov.recipesapp.databinding.ActivityMainBinding
 import com.ifedorov.recipesapp.model.Category
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
 
     private var _binding: ActivityMainBinding? = null
     private val binding
         get() = _binding ?: throw IllegalStateException("ActivityMainBinding can't be null")
+
+    private val threadPool: ExecutorService = Executors.newFixedThreadPool(10)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,17 +74,19 @@ class MainActivity : AppCompatActivity() {
             Log.i("!!!", "Выполняю запрос на потоке: ${Thread.currentThread().name}")
 
             val url = URL("https://recipes.androidsprint.ru/api/category")
-            val connection = url.openConnection() as HttpURLConnection
-            connection.connect()
+            val connection = url.openConnection() as? HttpURLConnection
+            connection?.connect()
 
-            val jsonBody = connection.getInputStream().use { inputStream ->
-                inputStream.bufferedReader().use { reader ->
-                    reader.readText()
+            val jsonBody = connection?.getInputStream()?.let { inputStream ->
+                inputStream.use { stream ->
+                    stream.bufferedReader().use { reader ->
+                        reader.readText()
+                    }
                 }
             }
 
-            Log.i("!!!", "Response code: ${connection.responseCode}")
-            Log.i("!!!", "Response message: ${connection.responseMessage}")
+            Log.i("!!!", "Response code: ${connection?.responseCode}")
+            Log.i("!!!", "Response message: ${connection?.responseMessage}")
             Log.i("!!!", "Body: $jsonBody")
 
             val gson = Gson()
@@ -90,8 +96,37 @@ class MainActivity : AppCompatActivity() {
                 Log.i("!!!", category.title)
             }
 
-            connection.disconnect()
+            val categoriesIds = categories.map { it.id }
+
+            categoriesIds.forEach { id ->
+                threadPool.submit {
+                    val threadName = Thread.currentThread().name
+                    Log.i("!!!", "Выполняю запрос для ID = $id в пуле потоков: $threadName")
+
+                    val url = URL("https://recipes.androidsprint.ru/api/category/$id/recipes")
+                    val connection = url.openConnection() as? HttpURLConnection
+                    connection?.connect()
+
+                    val recipeListJson = connection?.getInputStream()?.let { inputStream ->
+                        inputStream.use { stream ->
+                            stream.bufferedReader().use { reader ->
+                                reader.readText()
+                            }
+                        }
+                    }
+
+                    Log.i("!!!", "Id: $id, recipe list : $recipeListJson")
+                    connection?.disconnect()
+                }
+            }
+
+            connection?.disconnect()
         }
         thread.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        threadPool.shutdown()
     }
 }
