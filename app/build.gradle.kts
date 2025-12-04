@@ -58,4 +58,7 @@ dependencies {
     implementation(libs.androidx.navigation.dynamic.features.fragment)
 
     implementation(libs.gson)
+
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
 }
