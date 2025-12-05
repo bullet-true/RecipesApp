@@ -81,20 +81,31 @@ class MainActivity : AppCompatActivity() {
                 .addInterceptor(logging)
                 .build()
 
-            val request: Request = Request.Builder()
-                .url("https://recipes.androidsprint.ru/api/category")
-                .build()
+            var jsonBody = ""
 
-            val jsonBody = client.newCall(request).execute().use { response ->
-                Log.i("!!!", "Response code: ${response.code}")
-                Log.i("!!!", "Response message: ${response.message}")
-                response.body?.string() ?: ""
+            try {
+                val request: Request = Request.Builder()
+                    .url("https://recipes.androidsprint.ru/api/category")
+                    .build()
+
+                jsonBody = client.newCall(request).execute().use { response ->
+                    Log.i("!!!", "Response code: ${response.code}")
+                    Log.i("!!!", "Response message: ${response.message}")
+                    response.body?.string() ?: ""
+                }
+            } catch (e: Exception) {
+                Log.e("!!!", "Error in category request: ${e.message} ")
             }
 
             Log.i("!!!", "Body: $jsonBody")
 
             val gson = Gson()
-            val categories = gson.fromJson(jsonBody, Array<Category>::class.java)
+            val categories = runCatching {
+                gson.fromJson(jsonBody, Array<Category>::class.java)
+            }.getOrElse { e ->
+                Log.e("!!!", "Error categories parsing: ${e.message}")
+                emptyArray()
+            }
 
             categories.forEach { category ->
                 Log.i("!!!", category.title)
@@ -104,15 +115,19 @@ class MainActivity : AppCompatActivity() {
 
             categoriesIds.forEach { id ->
                 threadPool.submit {
-                    val request: Request = Request.Builder()
-                        .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
-                        .build()
+                    try {
+                        val request: Request = Request.Builder()
+                            .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
+                            .build()
 
-                    val threadName = Thread.currentThread().name
-                    Log.i("!!!", "Выполняю запрос для ID = $id в пуле потоков: $threadName")
+                        val threadName = Thread.currentThread().name
+                        Log.i("!!!", "Выполняю запрос для ID = $id в пуле потоков: $threadName")
 
-                    client.newCall(request).execute().use { response ->
-                        Log.i("!!!", "Id: $id, recipe list : ${response.body?.string()}")
+                        client.newCall(request).execute().use { response ->
+                            Log.i("!!!", "Id: $id, recipe list : ${response.body?.string()}")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("!!!", "Error in recipes ID request: ${e.message}")
                     }
                 }
             }
