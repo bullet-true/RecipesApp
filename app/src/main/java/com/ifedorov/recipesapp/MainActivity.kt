@@ -11,8 +11,9 @@ import androidx.navigation.navOptions
 import com.google.gson.Gson
 import com.ifedorov.recipesapp.databinding.ActivityMainBinding
 import com.ifedorov.recipesapp.model.Category
-import java.net.HttpURLConnection
-import java.net.URL
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -70,27 +71,41 @@ class MainActivity : AppCompatActivity() {
 
         Log.i("!!!", "Метод onCreate() выполняется на потоке: ${Thread.currentThread().name}")
 
-        val thread = Thread {
+        threadPool.submit {
             Log.i("!!!", "Выполняю запрос на потоке: ${Thread.currentThread().name}")
 
-            val url = URL("https://recipes.androidsprint.ru/api/category")
-            val connection = url.openConnection() as? HttpURLConnection
-            connection?.connect()
+            val logging = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+            val client: OkHttpClient = OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build()
 
-            val jsonBody = connection?.getInputStream()?.let { inputStream ->
-                inputStream.use { stream ->
-                    stream.bufferedReader().use { reader ->
-                        reader.readText()
-                    }
+            var jsonBody = ""
+
+            try {
+                val request: Request = Request.Builder()
+                    .url("https://recipes.androidsprint.ru/api/category")
+                    .build()
+
+                jsonBody = client.newCall(request).execute().use { response ->
+                    Log.i("!!!", "Response code: ${response.code}")
+                    Log.i("!!!", "Response message: ${response.message}")
+                    response.body?.string() ?: ""
                 }
+            } catch (e: Exception) {
+                Log.e("!!!", "Error in category request: ${e.message} ")
             }
 
-            Log.i("!!!", "Response code: ${connection?.responseCode}")
-            Log.i("!!!", "Response message: ${connection?.responseMessage}")
             Log.i("!!!", "Body: $jsonBody")
 
             val gson = Gson()
-            val categories = gson.fromJson(jsonBody, Array<Category>::class.java)
+            val categories = runCatching {
+                gson.fromJson(jsonBody, Array<Category>::class.java)
+            }.getOrElse { e ->
+                Log.e("!!!", "Error categories parsing: ${e.message}")
+                emptyArray()
+            }
 
             categories.forEach { category ->
                 Log.i("!!!", category.title)
@@ -100,29 +115,23 @@ class MainActivity : AppCompatActivity() {
 
             categoriesIds.forEach { id ->
                 threadPool.submit {
-                    val threadName = Thread.currentThread().name
-                    Log.i("!!!", "Выполняю запрос для ID = $id в пуле потоков: $threadName")
+                    try {
+                        val request: Request = Request.Builder()
+                            .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
+                            .build()
 
-                    val url = URL("https://recipes.androidsprint.ru/api/category/$id/recipes")
-                    val connection = url.openConnection() as? HttpURLConnection
-                    connection?.connect()
+                        val threadName = Thread.currentThread().name
+                        Log.i("!!!", "Выполняю запрос для ID = $id в пуле потоков: $threadName")
 
-                    val recipeListJson = connection?.getInputStream()?.let { inputStream ->
-                        inputStream.use { stream ->
-                            stream.bufferedReader().use { reader ->
-                                reader.readText()
-                            }
+                        client.newCall(request).execute().use { response ->
+                            Log.i("!!!", "Id: $id, recipe list : ${response.body?.string()}")
                         }
+                    } catch (e: Exception) {
+                        Log.e("!!!", "Error in recipes ID request: ${e.message}")
                     }
-
-                    Log.i("!!!", "Id: $id, recipe list : $recipeListJson")
-                    connection?.disconnect()
                 }
             }
-
-            connection?.disconnect()
         }
-        thread.start()
     }
 
     override fun onDestroy() {
