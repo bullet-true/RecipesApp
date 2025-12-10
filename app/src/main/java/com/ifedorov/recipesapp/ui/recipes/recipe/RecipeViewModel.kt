@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.ifedorov.recipesapp.R
-import com.ifedorov.recipesapp.data.STUB
+import com.ifedorov.recipesapp.data.repository.RecipesRepository
 import com.ifedorov.recipesapp.model.Recipe
 
 data class RecipeUiState(
@@ -17,40 +17,63 @@ data class RecipeUiState(
     val isFavorite: Boolean = false,
     val isLoading: Boolean = false,
     val recipeImage: Drawable? = null,
+    val error: String? = null,
 )
 
 class RecipeViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository = RecipesRepository()
     private val appContext: Context = application.applicationContext
 
     private val _state = MutableLiveData<RecipeUiState>().apply { value = RecipeUiState() }
     val state: LiveData<RecipeUiState> get() = _state
 
     fun loadRecipe(recipeId: Int) {
-        // TODO("load from network")
+        _state.value = _state.value?.copy(isLoading = true, error = null)
 
-        val recipe = STUB.getRecipeById(recipeId)
-        var recipeImage: Drawable? = null
+        repository.getRecipeById(recipeId) { result ->
+            result.onSuccess { recipe ->
+                if (recipe == null) {
+                    _state.postValue(
+                        _state.value?.copy(
+                            error = "Recipe not found"
+                        )
+                    )
+                } else {
+                    val recipeImage: Drawable? = try {
+                        appContext.assets.open(recipe.imageUrl).use { inputStream ->
+                            Drawable.createFromStream(inputStream, null)
+                        }
+                    } catch (e: Exception) {
+                        Log.e(
+                            "RecipeViewModel",
+                            "Error loading image in loadRecipe() function: ${recipe.imageUrl}"
+                        )
+                        e.printStackTrace()
+                        null
+                    }
 
-        recipe?.let {
-            try {
-                recipeImage = appContext.assets.open(it.imageUrl).use { inputStream ->
-                    Drawable.createFromStream(inputStream, null)
+                    _state.postValue(
+                        _state.value?.copy(
+                            recipe = recipe,
+                            servings = _state.value?.servings ?: 1,
+                            isFavorite = getFavorites().contains(recipeId.toString()),
+                            recipeImage = recipeImage,
+                            error = null,
+                            isLoading = false
+                        )
+                    )
                 }
-            } catch (e: Exception) {
-                Log.e(
-                    "RecipeViewModel",
-                    "Error loading image in loadRecipe() function: ${it.imageUrl}"
+            }
+
+            result.onFailure { throwable ->
+                _state.postValue(
+                    _state.value?.copy(
+                        error = throwable.message,
+                        isLoading = false
+                    )
                 )
-                e.printStackTrace()
             }
         }
-
-        _state.value = _state.value?.copy(
-            recipe = recipe,
-            isFavorite = getFavorites().contains(recipeId.toString()),
-            servings = _state.value?.servings ?: 1,
-            recipeImage = recipeImage
-        )
     }
 
     fun onFavoritesClicked() {

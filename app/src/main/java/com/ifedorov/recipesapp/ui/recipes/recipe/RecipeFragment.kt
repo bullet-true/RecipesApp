@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -73,7 +74,10 @@ class RecipeFragment : Fragment() {
                 binding.ivRecipeHeader.setImageDrawable(state.recipeImage)
 
                 ingredientsAdapter.dataSet = recipe.ingredients
+                ingredientsAdapter.notifyDataSetChanged()
+
                 methodAdapter.dataSet = recipe.method
+                methodAdapter.notifyDataSetChanged()
 
                 binding.seekBarServings.progress = state.servings
                 binding.tvServingsValue.text = state.servings.toString()
@@ -82,6 +86,10 @@ class RecipeFragment : Fragment() {
             }
 
             updateFavoriteIcon(state.isFavorite)
+
+            if (state.error != null) {
+                Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
+            }
         }
 
         binding.imgBtnFavorite.setOnClickListener {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -38,7 +39,13 @@ class FavoritesFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             binding.rvFavorites.isVisible = state.favoritesRecipes.isNotEmpty()
             binding.tvEmptyFavorites.isVisible = state.favoritesRecipes.isEmpty()
+
             favoritesAdapter.dataSet = state.favoritesRecipes
+            favoritesAdapter.notifyDataSetChanged()
+
+            if (state.error != null) {
+                Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
+            }
         }
 
         favoritesAdapter.setOnItemClickListener(object : RecipesListAdapter.OnItemClickListener {

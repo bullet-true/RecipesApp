@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -49,7 +50,13 @@ class RecipesListFragment : Fragment() {
             binding.ivCategoryHeader.setImageDrawable(state.categoryImage)
             binding.tvCategoryHeader.text = state.category?.title ?: ""
             binding.tvCategoryHeader.contentDescription = state.category?.title ?: ""
-            recipesListAdapter.dataSet = state.recipeList
+
+            recipesListAdapter.dataSet = state.recipesList
+            recipesListAdapter.notifyDataSetChanged()
+
+            if (state.error != null) {
+                Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
+            }
         }
 
         recipesListAdapter.setOnItemClickListener(object : RecipesListAdapter.OnItemClickListener {
