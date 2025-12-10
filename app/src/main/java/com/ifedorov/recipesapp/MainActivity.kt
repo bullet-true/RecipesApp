@@ -1,19 +1,13 @@
 package com.ifedorov.recipesapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
-import com.google.gson.Gson
 import com.ifedorov.recipesapp.databinding.ActivityMainBinding
-import com.ifedorov.recipesapp.model.Category
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -68,74 +62,5 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(R.id.favoritesFragment, null, options)
             }
         }
-
-        Log.i("!!!", "Метод onCreate() выполняется на потоке: ${Thread.currentThread().name}")
-
-        threadPool.submit {
-            Log.i("!!!", "Выполняю запрос на потоке: ${Thread.currentThread().name}")
-
-            val logging = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-            val client: OkHttpClient = OkHttpClient.Builder()
-                .addInterceptor(logging)
-                .build()
-
-            var jsonBody = ""
-
-            try {
-                val request: Request = Request.Builder()
-                    .url("https://recipes.androidsprint.ru/api/category")
-                    .build()
-
-                jsonBody = client.newCall(request).execute().use { response ->
-                    Log.i("!!!", "Response code: ${response.code}")
-                    Log.i("!!!", "Response message: ${response.message}")
-                    response.body?.string() ?: ""
-                }
-            } catch (e: Exception) {
-                Log.e("!!!", "Error in category request: ${e.message} ")
-            }
-
-            Log.i("!!!", "Body: $jsonBody")
-
-            val gson = Gson()
-            val categories = runCatching {
-                gson.fromJson(jsonBody, Array<Category>::class.java)
-            }.getOrElse { e ->
-                Log.e("!!!", "Error categories parsing: ${e.message}")
-                emptyArray()
-            }
-
-            categories.forEach { category ->
-                Log.i("!!!", category.title)
-            }
-
-            val categoriesIds = categories.map { it.id }
-
-            categoriesIds.forEach { id ->
-                threadPool.submit {
-                    try {
-                        val request: Request = Request.Builder()
-                            .url("https://recipes.androidsprint.ru/api/category/$id/recipes")
-                            .build()
-
-                        val threadName = Thread.currentThread().name
-                        Log.i("!!!", "Выполняю запрос для ID = $id в пуле потоков: $threadName")
-
-                        client.newCall(request).execute().use { response ->
-                            Log.i("!!!", "Id: $id, recipe list : ${response.body?.string()}")
-                        }
-                    } catch (e: Exception) {
-                        Log.e("!!!", "Error in recipes ID request: ${e.message}")
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        threadPool.shutdown()
     }
 }

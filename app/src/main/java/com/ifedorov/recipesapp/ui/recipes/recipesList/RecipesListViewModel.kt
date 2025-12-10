@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.ifedorov.recipesapp.data.STUB
+import com.ifedorov.recipesapp.data.repository.RecipesRepository
 import com.ifedorov.recipesapp.model.Category
 import com.ifedorov.recipesapp.model.Recipe
 
@@ -15,10 +15,12 @@ data class RecipesListUiState(
     val category: Category? = null,
     val categoryImage: Drawable? = null,
     val isLoading: Boolean = false,
-    val recipeList: List<Recipe> = emptyList()
+    val recipesList: List<Recipe> = emptyList(),
+    val error: String? = null,
 )
 
 class RecipesListViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository = RecipesRepository()
     private val appContext: Context = application.applicationContext
 
     private val _state = MutableLiveData<RecipesListUiState>()
@@ -26,7 +28,6 @@ class RecipesListViewModel(application: Application) : AndroidViewModel(applicat
     val state: LiveData<RecipesListUiState> get() = _state
 
     fun loadRecipesList(category: Category) {
-        val recipesList = STUB.getRecipesByCategoryId(category.id)
         var categoryImage: Drawable? = null
 
         try {
@@ -41,10 +42,28 @@ class RecipesListViewModel(application: Application) : AndroidViewModel(applicat
             e.printStackTrace()
         }
 
-        _state.value = _state.value?.copy(
-            category = category,
-            categoryImage = categoryImage,
-            recipeList = recipesList
-        )
+        _state.value = _state.value?.copy(isLoading = true, error = null)
+
+        repository.getRecipesByCategoryId(category.id) { result ->
+            result.onSuccess { recipes ->
+                _state.postValue(
+                    _state.value?.copy(
+                        category = category,
+                        categoryImage = categoryImage,
+                        recipesList = recipes,
+                        isLoading = false
+                    )
+                )
+            }
+
+            result.onFailure { throwable ->
+                _state.postValue(
+                    _state.value?.copy(
+                        error = throwable.message,
+                        isLoading = false
+                    )
+                )
+            }
+        }
     }
 }
