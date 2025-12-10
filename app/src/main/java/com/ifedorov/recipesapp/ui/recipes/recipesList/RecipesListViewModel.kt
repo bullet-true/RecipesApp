@@ -13,7 +13,7 @@ import com.ifedorov.recipesapp.model.Recipe
 
 data class RecipesListUiState(
     val category: Category? = null,
-    val categoryImage: Drawable? = null,
+    val categoryImageUrl: String? = null,
     val isLoading: Boolean = false,
     val recipesList: List<Recipe> = emptyList(),
     val error: String? = null,
@@ -28,28 +28,16 @@ class RecipesListViewModel(application: Application) : AndroidViewModel(applicat
     val state: LiveData<RecipesListUiState> get() = _state
 
     fun loadRecipesList(category: Category) {
-        var categoryImage: Drawable? = null
-
-        try {
-            categoryImage = appContext.assets.open(category.imageUrl).use { inputStream ->
-                Drawable.createFromStream(inputStream, null)
-            }
-        } catch (e: Exception) {
-            Log.e(
-                "RecipesListViewModel",
-                "Error loading image in loadRecipesList() function: ${category.imageUrl}"
-            )
-            e.printStackTrace()
-        }
-
         _state.value = _state.value?.copy(isLoading = true, error = null)
 
         repository.getRecipesByCategoryId(category.id) { result ->
+            val imageUrl = category.imageUrl
+
             result.onSuccess { recipes ->
                 _state.postValue(
                     _state.value?.copy(
                         category = category,
-                        categoryImage = categoryImage,
+                        categoryImageUrl = imageUrl,
                         recipesList = recipes,
                         isLoading = false
                     )

@@ -65,4 +65,6 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.retrofit)
+
+    implementation(libs.glide)
 }

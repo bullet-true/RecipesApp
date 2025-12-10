@@ -1,10 +1,11 @@
 package com.ifedorov.recipesapp.ui.categories
 
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.ifedorov.recipesapp.R
+import com.ifedorov.recipesapp.common.Constants.IMAGES_BASE_URL
 import com.ifedorov.recipesapp.databinding.ItemCategoryBinding
 import com.ifedorov.recipesapp.model.Category
 
@@ -38,16 +39,13 @@ class CategoriesListAdapter(var dataSet: List<Category>) :
             tvDescription.text = category.description
         }
 
-        try {
-            val image =
-                viewHolder.itemView.context.assets.open(category.imageUrl).use { inputStream ->
-                    Drawable.createFromStream(inputStream, null)
-                }
-            viewHolder.binding.ivCardItem.setImageDrawable(image)
-        } catch (e: Exception) {
-            Log.e("CategoriesListAdapter", "Error loading image: ${category.imageUrl}")
-            e.printStackTrace()
-        }
+        Glide
+            .with(viewHolder.itemView)
+            .load(IMAGES_BASE_URL + category.imageUrl)
+            .centerCrop()
+            .placeholder(R.drawable.img_placeholder)
+            .error(R.drawable.img_error)
+            .into(viewHolder.binding.ivCardItem)
 
         viewHolder.binding.cardItemLayout.setOnClickListener {
             itemClickListener?.onItemClick(category.id)

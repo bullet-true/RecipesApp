@@ -10,8 +10,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.ifedorov.recipesapp.R
+import com.ifedorov.recipesapp.common.Constants.IMAGES_BASE_URL
 import com.ifedorov.recipesapp.databinding.FragmentRecipeBinding
 
 class RecipeFragment : Fragment() {
@@ -71,7 +73,16 @@ class RecipeFragment : Fragment() {
             state.recipe?.let { recipe ->
                 binding.tvRecipeHeader.text = recipe.title
                 binding.ivRecipeHeader.contentDescription = recipe.title
-                binding.ivRecipeHeader.setImageDrawable(state.recipeImage)
+
+                state.recipeImageUrl?.let { url ->
+                    Glide
+                        .with(this)
+                        .load(IMAGES_BASE_URL + url)
+                        .centerCrop()
+                        .placeholder(R.drawable.img_placeholder)
+                        .error(R.drawable.img_error)
+                        .into(binding.ivRecipeHeader)
+                }
 
                 ingredientsAdapter.dataSet = recipe.ingredients
                 ingredientsAdapter.notifyDataSetChanged()

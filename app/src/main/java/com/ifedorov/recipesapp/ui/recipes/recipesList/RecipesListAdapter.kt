@@ -1,10 +1,11 @@
 package com.ifedorov.recipesapp.ui.recipes.recipesList
 
-import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.ifedorov.recipesapp.R
+import com.ifedorov.recipesapp.common.Constants.IMAGES_BASE_URL
 import com.ifedorov.recipesapp.databinding.ItemRecipeBinding
 import com.ifedorov.recipesapp.model.Recipe
 
@@ -37,16 +38,13 @@ class RecipesListAdapter(var dataSet: List<Recipe>) :
             tvRecipeCardItemHeader.text = recipe.title
         }
 
-        try {
-            val image =
-                viewHolder.itemView.context.assets.open(recipe.imageUrl).use { inputStream ->
-                    Drawable.createFromStream(inputStream, null)
-                }
-            viewHolder.binding.ivRecipeCardItem.setImageDrawable(image)
-        } catch (e: Exception) {
-            Log.e("RecipesListAdapter", "Error loading image: ${recipe.imageUrl}")
-            e.printStackTrace()
-        }
+        Glide
+            .with(viewHolder.itemView)
+            .load(IMAGES_BASE_URL + recipe.imageUrl)
+            .centerCrop()
+            .placeholder(R.drawable.img_placeholder)
+            .error(R.drawable.img_error)
+            .into(viewHolder.binding.ivRecipeCardItem)
 
         viewHolder.binding.cardRecipeItemLayout.setOnClickListener {
             itemClickListener?.onItemClick(recipe.id)
