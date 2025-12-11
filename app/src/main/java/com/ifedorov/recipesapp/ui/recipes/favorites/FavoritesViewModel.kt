@@ -5,9 +5,11 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.ifedorov.recipesapp.R
 import com.ifedorov.recipesapp.data.repository.RecipesRepository
 import com.ifedorov.recipesapp.model.Recipe
+import kotlinx.coroutines.launch
 
 data class FavoritesState(
     val isLoading: Boolean = false,
@@ -29,23 +31,21 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
         val favoritesStringSet = getFavorites()
         val favoritesIds: Set<Int> = favoritesStringSet.mapNotNull { it.toIntOrNull() }.toSet()
 
-        repository.getRecipesByIds(favoritesIds) { result ->
+        viewModelScope.launch {
+            val result = repository.getRecipesByIds(favoritesIds)
+
             result.onSuccess { recipes ->
-                _state.postValue(
-                    _state.value?.copy(
-                        favoritesRecipes = recipes,
-                        error = null,
-                        isLoading = false
-                    )
+                _state.value = _state.value?.copy(
+                    favoritesRecipes = recipes,
+                    error = null,
+                    isLoading = false
                 )
             }
 
             result.onFailure { throwable ->
-                _state.postValue(
-                    _state.value?.copy(
-                        error = throwable.message,
-                        isLoading = false
-                    )
+                _state.value = _state.value?.copy(
+                    error = throwable.message,
+                    isLoading = false
                 )
             }
         }
