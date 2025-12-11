@@ -118,23 +118,26 @@ class RecipesRepository {
     fun getRecipesByIds(recipesIds: Set<Int>, callback: (Result<List<Recipe>>) -> Unit) {
         threadPool.execute {
             try {
-                val idsString = recipesIds.joinToString(separator = ",")
-                val response = service.getRecipesByIds(idsString).execute()
-
-                if (response.isSuccessful) {
-                    val body = response.body() ?: emptyList()
-                    callback(Result.success(body))
+                if (recipesIds.isEmpty()) {
+                    callback(Result.success(emptyList()))
                 } else {
-                    callback(
-                        Result.failure(
-                            Exception(
-                                "HTTP response error in getRecipesByIds. " +
-                                        "Code: ${response.code()}. Message:  ${response.message()}"
+                    val idsString = recipesIds.joinToString(separator = ",")
+                    val response = service.getRecipesByIds(idsString).execute()
+
+                    if (response.isSuccessful) {
+                        val body = response.body() ?: emptyList()
+                        callback(Result.success(body))
+                    } else {
+                        callback(
+                            Result.failure(
+                                Exception(
+                                    "HTTP response error in getRecipesByIds. " +
+                                            "Code: ${response.code()}. Message:  ${response.message()}"
+                                )
                             )
                         )
-                    )
+                    }
                 }
-
             } catch (e: Exception) {
                 callback(Result.failure(e))
             }
