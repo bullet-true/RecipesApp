@@ -32,19 +32,17 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
         val favoritesIds: Set<Int> = favoritesStringSet.mapNotNull { it.toIntOrNull() }.toSet()
 
         viewModelScope.launch {
-            val result = repository.getRecipesByIds(favoritesIds)
+            try {
+                val recipes = repository.getRecipesByIds(favoritesIds)
 
-            result.onSuccess { recipes ->
                 _state.value = _state.value?.copy(
                     favoritesRecipes = recipes,
                     error = null,
                     isLoading = false
                 )
-            }
-
-            result.onFailure { throwable ->
+            } catch (e: Exception) {
                 _state.value = _state.value?.copy(
-                    error = throwable.message,
+                    error = e.message,
                     isLoading = false
                 )
             }

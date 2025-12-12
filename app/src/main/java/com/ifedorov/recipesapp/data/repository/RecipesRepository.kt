@@ -33,101 +33,28 @@ class RecipesRepository {
 
     private val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
 
-    suspend fun getCategories(): Result<List<Category>> =
+    suspend fun getCategories(): List<Category> =
         withContext(Dispatchers.IO) {
-            try {
-                val response = service.getCategories().execute()
-                if (response.isSuccessful) {
-                    val body = response.body() ?: emptyList()
-                    Result.success(body)
-                } else {
-                    Result.failure(
-                        Exception(
-                            "HTTP response error in getCategories(). " +
-                                    "Code: ${response.code()}. Message:  ${response.message()}"
-                        )
-                    )
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
+            service.getCategories()
         }
 
-    suspend fun getRecipesByCategoryId(categoryId: Int): Result<List<Recipe>> =
+    suspend fun getRecipesByCategoryId(categoryId: Int): List<Recipe> =
         withContext(Dispatchers.IO) {
-            try {
-                val response = service.getRecipesByCategoryId(categoryId).execute()
-
-                if (response.isSuccessful) {
-                    val body = response.body() ?: emptyList()
-                    Result.success(body)
-                } else {
-                    Result.failure(
-                        Exception(
-                            "HTTP response error in getRecipesByCategoryId. " +
-                                    "Code: ${response.code()}. Message:  ${response.message()}"
-                        )
-                    )
-                }
-
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
+            service.getRecipesByCategoryId(categoryId)
         }
 
-
-    suspend fun getRecipeById(recipeId: Int): Result<Recipe?> =
+    suspend fun getRecipeById(recipeId: Int): Recipe =
         withContext(Dispatchers.IO) {
-            try {
-                val response = service.getRecipeById(recipeId).execute()
-
-                if (response.isSuccessful) {
-                    val body = response.body()
-
-                    if (body != null) {
-                        Result.success(body)
-                    } else {
-                        Result.failure(Exception("Recipe with ID:$recipeId not found"))
-                    }
-
-                } else {
-                    Result.failure(
-                        Exception(
-                            "HTTP response error in getRecipeById. " +
-                                    "Code: ${response.code()}. Message:  ${response.message()}"
-                        )
-                    )
-                }
-
-            } catch (e: Exception) {
-                Result.failure(e)
-            }
+            service.getRecipeById(recipeId)
         }
 
-
-    suspend fun getRecipesByIds(recipesIds: Set<Int>): Result<List<Recipe>> =
+    suspend fun getRecipesByIds(recipesIds: Set<Int>): List<Recipe> =
         withContext(Dispatchers.IO) {
-            try {
-                if (recipesIds.isEmpty()) {
-                    Result.success(emptyList())
-                } else {
-                    val idsString = recipesIds.joinToString(separator = ",")
-                    val response = service.getRecipesByIds(idsString).execute()
-
-                    if (response.isSuccessful) {
-                        val body = response.body() ?: emptyList()
-                        Result.success(body)
-                    } else {
-                        Result.failure(
-                            Exception(
-                                "HTTP response error in getRecipesByIds. " +
-                                        "Code: ${response.code()}. Message:  ${response.message()}"
-                            )
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                Result.failure(e)
+            if (recipesIds.isEmpty()) {
+                emptyList()
+            } else {
+                val idsString = recipesIds.joinToString(separator = ",")
+                service.getRecipesByIds(idsString)
             }
         }
 

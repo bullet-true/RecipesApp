@@ -31,31 +31,21 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
         _state.value = _state.value?.copy(isLoading = true, error = null)
 
         viewModelScope.launch {
-            val result = repository.getRecipeById(recipeId)
+            try {
+                val recipe = repository.getRecipeById(recipeId)
+                val imageUrl = recipe.imageUrl
 
-            result.onSuccess { recipe ->
-                if (recipe == null) {
-                    _state.value = _state.value?.copy(
-                        error = "Recipe not found"
-                    )
-
-                } else {
-                    val imageUrl = recipe.imageUrl
-
-                    _state.value = _state.value?.copy(
-                        recipe = recipe,
-                        servings = _state.value?.servings ?: 1,
-                        isFavorite = getFavorites().contains(recipeId.toString()),
-                        recipeImageUrl = imageUrl,
-                        error = null,
-                        isLoading = false
-                    )
-                }
-            }
-
-            result.onFailure { throwable ->
                 _state.value = _state.value?.copy(
-                    error = throwable.message,
+                    recipe = recipe,
+                    servings = _state.value?.servings ?: 1,
+                    isFavorite = getFavorites().contains(recipeId.toString()),
+                    recipeImageUrl = imageUrl,
+                    error = null,
+                    isLoading = false
+                )
+            } catch (e: Exception) {
+                _state.value = _state.value?.copy(
+                    error = e.message,
                     isLoading = false
                 )
             }

@@ -24,18 +24,16 @@ class CategoriesListViewModel : ViewModel() {
         _state.value = _state.value?.copy(isLoading = true, error = null)
 
         viewModelScope.launch {
-            val result = repository.getCategories()
+            try {
+                val categories = repository.getCategories()
 
-            result.onSuccess { categories ->
                 _state.value = _state.value?.copy(
                     categoriesList = categories,
                     isLoading = false
                 )
-            }
-
-            result.onFailure { throwable ->
+            } catch (e: Exception) {
                 _state.value = _state.value?.copy(
-                    error = throwable.message,
+                    error = e.message,
                     isLoading = false
                 )
             }

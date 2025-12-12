@@ -29,21 +29,19 @@ class RecipesListViewModel(application: Application) : AndroidViewModel(applicat
         _state.value = _state.value?.copy(isLoading = true, error = null)
 
         viewModelScope.launch {
-            val result = repository.getRecipesByCategoryId(category.id)
-            val imageUrl = category.imageUrl
+            try {
+                val recipes = repository.getRecipesByCategoryId(category.id)
+                val imageUrl = category.imageUrl
 
-            result.onSuccess { recipes ->
                 _state.value = _state.value?.copy(
                     category = category,
                     categoryImageUrl = imageUrl,
                     recipesList = recipes,
                     isLoading = false
                 )
-            }
-
-            result.onFailure { throwable ->
+            } catch (e: Exception) {
                 _state.value = _state.value?.copy(
-                    error = throwable.message,
+                    error = e.message,
                     isLoading = false
                 )
             }
