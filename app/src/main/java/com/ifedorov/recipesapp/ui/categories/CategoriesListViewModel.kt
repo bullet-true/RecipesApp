@@ -3,8 +3,10 @@ package com.ifedorov.recipesapp.ui.categories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ifedorov.recipesapp.data.repository.RecipesRepository
 import com.ifedorov.recipesapp.model.Category
+import kotlinx.coroutines.launch
 
 data class CategoriesListState(
     val isLoading: Boolean = false,
@@ -21,22 +23,18 @@ class CategoriesListViewModel : ViewModel() {
     fun loadCategoriesList() {
         _state.value = _state.value?.copy(isLoading = true, error = null)
 
-        repository.getCategories { result ->
-            result.onSuccess { categories ->
-                _state.postValue(
-                    _state.value?.copy(
-                        categoriesList = categories,
-                        isLoading = false
-                    )
-                )
-            }
+        viewModelScope.launch {
+            try {
+                val categories = repository.getCategories()
 
-            result.onFailure { throwable ->
-                _state.postValue(
-                    _state.value?.copy(
-                        error = throwable.message,
-                        isLoading = false
-                    )
+                _state.value = _state.value?.copy(
+                    categoriesList = categories,
+                    isLoading = false
+                )
+            } catch (e: Exception) {
+                _state.value = _state.value?.copy(
+                    error = e.message,
+                    isLoading = false
                 )
             }
         }
