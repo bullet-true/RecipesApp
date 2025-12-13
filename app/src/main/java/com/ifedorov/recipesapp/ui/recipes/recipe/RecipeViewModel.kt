@@ -21,8 +21,8 @@ data class RecipeUiState(
 )
 
 class RecipeViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = RecipesRepository()
     private val appContext: Context = application.applicationContext
+    private val repository = RecipesRepository(appContext)
 
     private val _state = MutableLiveData<RecipeUiState>().apply { value = RecipeUiState() }
     val state: LiveData<RecipeUiState> get() = _state

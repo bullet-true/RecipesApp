@@ -1,6 +1,9 @@
 package com.ifedorov.recipesapp.data.repository
 
+import android.content.Context
+import androidx.room.Room
 import com.ifedorov.recipesapp.data.api.RecipeApiService
+import com.ifedorov.recipesapp.data.local.AppDatabase
 import com.ifedorov.recipesapp.model.Category
 import com.ifedorov.recipesapp.model.Recipe
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +15,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
-class RecipesRepository {
+class RecipesRepository(context: Context) {
     private val json = Json { ignoreUnknownKeys = true }
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -32,6 +35,14 @@ class RecipesRepository {
         .build()
 
     private val service: RecipeApiService = retrofit.create(RecipeApiService::class.java)
+
+    private val db: AppDatabase = Room.databaseBuilder(
+        context,
+        AppDatabase::class.java,
+        "database-recipes"
+    ).build()
+
+    private val categoriesDao = db.categoriesDao()
 
     suspend fun getCategories(): List<Category> =
         withContext(Dispatchers.IO) {
@@ -57,6 +68,13 @@ class RecipesRepository {
                 service.getRecipesByIds(idsString)
             }
         }
+
+    suspend fun getCategoriesFromCache(): List<Category> =
+        categoriesDao.getCategories()
+
+    suspend fun saveCategoriesToCache(categories: List<Category>) {
+        categoriesDao.insertCategories(categories)
+    }
 
     companion object {
         private const val BASE_URL = "https://recipes.androidsprint.ru/api/"

@@ -1,8 +1,9 @@
 package com.ifedorov.recipesapp.ui.categories
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ifedorov.recipesapp.data.repository.RecipesRepository
 import com.ifedorov.recipesapp.model.Category
@@ -14,8 +15,9 @@ data class CategoriesListState(
     val error: String? = null,
 )
 
-class CategoriesListViewModel : ViewModel() {
-    private val repository = RecipesRepository()
+class CategoriesListViewModel(application: Application) : AndroidViewModel(application) {
+    private val appContext = application.applicationContext
+    private val repository = RecipesRepository(appContext)
     private val _state = MutableLiveData<CategoriesListState>()
         .apply { value = CategoriesListState() }
     val state: LiveData<CategoriesListState> get() = _state
@@ -25,7 +27,16 @@ class CategoriesListViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
+                val cachedCategories = repository.getCategoriesFromCache()
+
+                if (cachedCategories.isNotEmpty()) {
+                    _state.value = _state.value?.copy(
+                        categoriesList = cachedCategories
+                    )
+                }
+
                 val categories = repository.getCategories()
+                repository.saveCategoriesToCache(categories)
 
                 _state.value = _state.value?.copy(
                     categoriesList = categories,
