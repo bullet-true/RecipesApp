@@ -29,11 +29,9 @@ class CategoriesListViewModel(application: Application) : AndroidViewModel(appli
             try {
                 val cachedCategories = repository.getCategoriesFromCache()
 
-                if (cachedCategories.isNotEmpty()) {
-                    _state.value = _state.value?.copy(
-                        categoriesList = cachedCategories
-                    )
-                }
+                 _state.value = _state.value?.copy(
+                    categoriesList = cachedCategories
+                )
 
                 val categories = repository.getCategories()
                 repository.saveCategoriesToCache(categories)
