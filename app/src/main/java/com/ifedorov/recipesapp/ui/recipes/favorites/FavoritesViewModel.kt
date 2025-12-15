@@ -18,8 +18,8 @@ data class FavoritesState(
 )
 
 class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = RecipesRepository()
     private val appContext: Context = application.applicationContext
+    private val repository = RecipesRepository(appContext)
 
     private val _state = MutableLiveData<FavoritesState>()
         .apply { value = FavoritesState() }
