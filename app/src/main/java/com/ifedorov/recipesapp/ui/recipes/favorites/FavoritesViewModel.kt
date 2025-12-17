@@ -33,7 +33,17 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
 
         viewModelScope.launch {
             try {
+                val cachedFavorites = repository.getFavoritesFromCache()
+
+                _state.value = _state.value?.copy(
+                    favoritesRecipes = cachedFavorites,
+                    error = null
+                )
+
                 val recipes = repository.getRecipesByIds(favoritesIds)
+                    .map { it.copy(isFavorite = true) }
+
+                repository.saveRecipesToCache(recipes)
 
                 _state.value = _state.value?.copy(
                     favoritesRecipes = recipes,

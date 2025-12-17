@@ -84,6 +84,12 @@ class RecipesRepository(context: Context) {
         recipesDao.insertRecipes(recipes)
     }
 
+    suspend fun getRecipeByIdFromCache(recipeId: Int): Recipe? =
+        recipesDao.getRecipeById(recipeId)
+
+    suspend fun getFavoritesFromCache(): List<Recipe> =
+        recipesDao.getFavorites()
+
     companion object {
         private const val BASE_URL = "https://recipes.androidsprint.ru/api/"
     }

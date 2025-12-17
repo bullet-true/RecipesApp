@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 data class RecipeUiState(
     val recipe: Recipe? = null,
     val servings: Int = 1,
-    val isFavorite: Boolean = false,
     val isLoading: Boolean = false,
     val recipeImageUrl: String? = null,
     val error: String? = null,
@@ -32,14 +31,30 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
 
         viewModelScope.launch {
             try {
-                val recipe = repository.getRecipeById(recipeId)
-                val imageUrl = recipe.imageUrl
+                val favorites = getFavorites()
+                val cachedRecipe = repository.getRecipeByIdFromCache(recipeId)?.copy(
+                    isFavorite = favorites.contains(recipeId.toString())
+                )
+
+                cachedRecipe?.let {
+                    _state.value = _state.value?.copy(
+                        recipe = it,
+                        servings = _state.value?.servings ?: 1,
+                        recipeImageUrl = it.imageUrl,
+                        error = null,
+                    )
+                }
+
+                val recipe = repository.getRecipeById(recipeId).copy(
+                    isFavorite = favorites.contains(recipeId.toString())
+                )
+
+                repository.saveRecipesToCache(listOf(recipe))
 
                 _state.value = _state.value?.copy(
                     recipe = recipe,
                     servings = _state.value?.servings ?: 1,
-                    isFavorite = getFavorites().contains(recipeId.toString()),
-                    recipeImageUrl = imageUrl,
+                    recipeImageUrl = recipe.imageUrl,
                     error = null,
                     isLoading = false
                 )
@@ -53,18 +68,22 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun onFavoritesClicked() {
-        val recipeId = _state.value?.recipe?.id
-        val favorites = getFavorites()
-        val isFavorite = favorites.contains(recipeId.toString())
+        _state.value?.recipe?.let {
+            val favorites = getFavorites()
+            val isFavorite = favorites.contains(it.id.toString())
 
-        if (isFavorite) {
-            favorites.remove(recipeId.toString())
-        } else {
-            favorites.add(recipeId.toString())
+            if (isFavorite) {
+                favorites.remove(it.id.toString())
+            } else {
+                favorites.add(it.id.toString())
+            }
+
+            saveFavorites(favorites)
+
+            _state.value = _state.value?.copy(
+                recipe = it.copy(isFavorite = !isFavorite)
+            )
         }
-
-        saveFavorites(favorites)
-        _state.value = _state.value?.copy(isFavorite = !isFavorite)
     }
 
     fun updateServings(count: Int) {

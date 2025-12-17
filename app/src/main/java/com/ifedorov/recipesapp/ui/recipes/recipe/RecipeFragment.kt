@@ -96,7 +96,9 @@ class RecipeFragment : Fragment() {
                 ingredientsAdapter.updateIngredients(state.servings)
             }
 
-            updateFavoriteIcon(state.isFavorite)
+            state.recipe?.let { recipe ->
+                updateFavoriteIcon(recipe.isFavorite)
+            }
 
             if (state.error != null) {
                 Toast.makeText(requireContext(), state.error, Toast.LENGTH_LONG).show()
