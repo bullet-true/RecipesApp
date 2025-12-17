@@ -43,6 +43,7 @@ class RecipesRepository(context: Context) {
     ).build()
 
     private val categoriesDao = db.categoriesDao()
+    private val recipesDao = db.recipesDao()
 
     suspend fun getCategories(): List<Category> =
         withContext(Dispatchers.IO) {
@@ -74,6 +75,13 @@ class RecipesRepository(context: Context) {
 
     suspend fun saveCategoriesToCache(categories: List<Category>) {
         categoriesDao.insertCategories(categories)
+    }
+
+    suspend fun getRecipesByCategoryIdFromCache(categoryId: Int): List<Recipe> =
+        recipesDao.getRecipesByCategoryId(categoryId)
+
+    suspend fun saveRecipesToCache(recipes: List<Recipe>) {
+        recipesDao.insertRecipes(recipes)
     }
 
     companion object {

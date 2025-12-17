@@ -31,8 +31,19 @@ class RecipesListViewModel(application: Application) : AndroidViewModel(applicat
 
         viewModelScope.launch {
             try {
-                val recipes = repository.getRecipesByCategoryId(category.id)
                 val imageUrl = category.imageUrl
+                val cachedRecipes = repository.getRecipesByCategoryIdFromCache(category.id)
+
+                _state.value = _state.value?.copy(
+                    category = category,
+                    categoryImageUrl = imageUrl,
+                    recipesList = cachedRecipes
+                )
+
+                val recipes = repository.getRecipesByCategoryId(category.id)
+                    .map { it.copy(categoryId = category.id) }
+
+                repository.saveRecipesToCache(recipes)
 
                 _state.value = _state.value?.copy(
                     category = category,
