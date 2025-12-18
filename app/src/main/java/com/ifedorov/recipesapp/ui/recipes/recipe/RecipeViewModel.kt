@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.ifedorov.recipesapp.R
 import com.ifedorov.recipesapp.data.repository.RecipesRepository
 import com.ifedorov.recipesapp.model.Recipe
 import kotlinx.coroutines.launch
@@ -30,23 +29,22 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
         _state.value = _state.value?.copy(isLoading = true, error = null)
 
         viewModelScope.launch {
-            try {
-                val favorites = getFavorites()
-                val cachedRecipe = repository.getRecipeByIdFromCache(recipeId)?.copy(
-                    isFavorite = favorites.contains(recipeId.toString())
+            val cachedRecipe = repository.getRecipeByIdFromCache(recipeId)
+            val isFavorite = cachedRecipe?.isFavorite
+
+            cachedRecipe?.let { recipe ->
+                _state.value = _state.value?.copy(
+                    recipe = recipe,
+                    servings = _state.value?.servings ?: 1,
+                    recipeImageUrl = recipe.imageUrl,
+                    error = null,
                 )
+            }
 
-                cachedRecipe?.let {
-                    _state.value = _state.value?.copy(
-                        recipe = it,
-                        servings = _state.value?.servings ?: 1,
-                        recipeImageUrl = it.imageUrl,
-                        error = null,
-                    )
-                }
-
-                val recipe = repository.getRecipeById(recipeId).copy(
-                    isFavorite = favorites.contains(recipeId.toString())
+            try {
+                val recipeFromApi = repository.getRecipeById(recipeId)
+                val recipe = recipeFromApi.copy(
+                    isFavorite = isFavorite ?: recipeFromApi.isFavorite
                 )
 
                 repository.saveRecipesToCache(listOf(recipe))
@@ -60,6 +58,7 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
                 )
             } catch (e: Exception) {
                 _state.value = _state.value?.copy(
+                    recipe = cachedRecipe,
                     error = e.message,
                     isLoading = false
                 )
@@ -68,49 +67,20 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun onFavoritesClicked() {
-        _state.value?.recipe?.let {
-            val favorites = getFavorites()
-            val isFavorite = favorites.contains(it.id.toString())
-
-            if (isFavorite) {
-                favorites.remove(it.id.toString())
-            } else {
-                favorites.add(it.id.toString())
-            }
-
-            saveFavorites(favorites)
+        _state.value?.recipe?.let { recipe ->
+            val updatedRecipe = recipe.copy(isFavorite = !recipe.isFavorite)
 
             _state.value = _state.value?.copy(
-                recipe = it.copy(isFavorite = !isFavorite)
+                recipe = updatedRecipe
             )
+
+            viewModelScope.launch {
+                repository.saveRecipesToCache(listOf(updatedRecipe))
+            }
         }
     }
 
     fun updateServings(count: Int) {
         _state.value = _state.value?.copy(servings = count)
-    }
-
-    private fun getFavorites(): MutableSet<String> {
-        val sharedPrefs = appContext.getSharedPreferences(
-            appContext.getString(R.string.preference_favorites_recipes),
-            Context.MODE_PRIVATE
-        )
-        val savedSet = sharedPrefs.getStringSet(
-            appContext.getString(R.string.saved_favorites_recipes),
-            emptySet()
-        )
-
-        return HashSet(savedSet)
-    }
-
-    private fun saveFavorites(favoritesSet: Set<String>) {
-        val sharedPrefs = appContext.getSharedPreferences(
-            appContext.getString(R.string.preference_favorites_recipes),
-            Context.MODE_PRIVATE
-        )
-        with(sharedPrefs.edit()) {
-            putStringSet(appContext.getString(R.string.saved_favorites_recipes), favoritesSet)
-            apply()
-        }
     }
 }

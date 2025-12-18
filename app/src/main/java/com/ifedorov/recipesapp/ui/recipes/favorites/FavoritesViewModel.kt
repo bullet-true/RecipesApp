@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.ifedorov.recipesapp.R
 import com.ifedorov.recipesapp.data.repository.RecipesRepository
 import com.ifedorov.recipesapp.model.Recipe
 import kotlinx.coroutines.launch
@@ -28,25 +27,12 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
     fun loadFavoritesRecipes() {
         _state.value = _state.value?.copy(error = null, isLoading = true)
 
-        val favoritesStringSet = getFavorites()
-        val favoritesIds: Set<Int> = favoritesStringSet.mapNotNull { it.toIntOrNull() }.toSet()
-
         viewModelScope.launch {
             try {
                 val cachedFavorites = repository.getFavoritesFromCache()
 
                 _state.value = _state.value?.copy(
                     favoritesRecipes = cachedFavorites,
-                    error = null
-                )
-
-                val recipes = repository.getRecipesByIds(favoritesIds)
-                    .map { it.copy(isFavorite = true) }
-
-                repository.saveRecipesToCache(recipes)
-
-                _state.value = _state.value?.copy(
-                    favoritesRecipes = recipes,
                     error = null,
                     isLoading = false
                 )
@@ -57,18 +43,5 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
                 )
             }
         }
-    }
-
-    private fun getFavorites(): MutableSet<String> {
-        val sharedPrefs = appContext.getSharedPreferences(
-            appContext.getString(R.string.preference_favorites_recipes),
-            Context.MODE_PRIVATE
-        )
-        val savedSet = sharedPrefs.getStringSet(
-            appContext.getString(R.string.saved_favorites_recipes),
-            emptySet()
-        )
-
-        return HashSet(savedSet)
     }
 }

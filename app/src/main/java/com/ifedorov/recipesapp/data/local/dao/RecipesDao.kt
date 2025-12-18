@@ -17,6 +17,6 @@ interface RecipesDao {
     @Query("SELECT * FROM recipes WHERE id = :recipeId")
     suspend fun getRecipeById(recipeId: Int): Recipe?
 
-    @Query("SELECT * FROM recipes WHERE is_favorite = true")
+    @Query("SELECT * FROM recipes WHERE is_favorite = 1")
     suspend fun getFavorites(): List<Recipe>
 }

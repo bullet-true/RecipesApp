@@ -30,18 +30,26 @@ class RecipesListViewModel(application: Application) : AndroidViewModel(applicat
         _state.value = _state.value?.copy(isLoading = true, error = null)
 
         viewModelScope.launch {
+            val imageUrl = category.imageUrl
+            val cachedRecipes = repository.getRecipesByCategoryIdFromCache(category.id)
+
+            _state.value = _state.value?.copy(
+                category = category,
+                categoryImageUrl = imageUrl,
+                recipesList = cachedRecipes
+            )
+
             try {
-                val imageUrl = category.imageUrl
-                val cachedRecipes = repository.getRecipesByCategoryIdFromCache(category.id)
+                val remoteRecipes = repository.getRecipesByCategoryId(category.id)
 
-                _state.value = _state.value?.copy(
-                    category = category,
-                    categoryImageUrl = imageUrl,
-                    recipesList = cachedRecipes
-                )
+                val recipes = remoteRecipes.map { remoteRecipe ->
+                    val cachedRecipe = cachedRecipes.find { it.id == remoteRecipe.id }
 
-                val recipes = repository.getRecipesByCategoryId(category.id)
-                    .map { it.copy(categoryId = category.id) }
+                    remoteRecipe.copy(
+                        categoryId = category.id,
+                        isFavorite = cachedRecipe?.isFavorite ?: remoteRecipe.isFavorite
+                    )
+                }
 
                 repository.saveRecipesToCache(recipes)
 
@@ -53,6 +61,7 @@ class RecipesListViewModel(application: Application) : AndroidViewModel(applicat
                 )
             } catch (e: Exception) {
                 _state.value = _state.value?.copy(
+                    recipesList = cachedRecipes,
                     error = e.message,
                     isLoading = false
                 )
