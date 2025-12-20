@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.ifedorov.RecipeApplication
 import com.ifedorov.recipesapp.R
 import com.ifedorov.recipesapp.common.Constants.IMAGES_BASE_URL
 import com.ifedorov.recipesapp.databinding.FragmentRecipesListBinding
@@ -19,9 +19,16 @@ class RecipesListFragment : Fragment() {
     private val binding
         get() = _binding ?: throw IllegalStateException("FragmentRecipesListBinding can't be null")
 
-    private val viewModel: RecipesListViewModel by viewModels()
+    private lateinit var viewModel: RecipesListViewModel
     private var recipesListAdapter = RecipesListAdapter(emptyList())
     private val args: RecipesListFragmentArgs by navArgs()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val appContainer = (requireActivity().application as RecipeApplication).appContainer
+        viewModel = appContainer.recipesListViewModelFactory.create()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

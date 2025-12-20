@@ -1,10 +1,8 @@
 package com.ifedorov.recipesapp.ui.recipes.favorites
 
-import android.app.Application
-import android.content.Context
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ifedorov.recipesapp.data.repository.RecipesRepository
 import com.ifedorov.recipesapp.model.Recipe
@@ -16,9 +14,7 @@ data class FavoritesState(
     val error: String? = null,
 )
 
-class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
-    private val appContext: Context = application.applicationContext
-    private val repository = RecipesRepository(appContext)
+class FavoritesViewModel(private val repository: RecipesRepository) : ViewModel() {
 
     private val _state = MutableLiveData<FavoritesState>()
         .apply { value = FavoritesState() }

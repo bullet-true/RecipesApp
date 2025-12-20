@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.ifedorov.RecipeApplication
 import com.ifedorov.recipesapp.databinding.FragmentListCategoriesBinding
 
 class CategoriesListFragment : Fragment() {
@@ -16,8 +16,15 @@ class CategoriesListFragment : Fragment() {
         get() = _binding
             ?: throw IllegalStateException("FragmentListCategoriesBinding can't be null")
 
-    private val viewModel: CategoriesListViewModel by viewModels()
+    private lateinit var viewModel: CategoriesListViewModel
     private var categoriesListAdapter = CategoriesListAdapter(emptyList())
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val appContainer = (requireActivity().application as RecipeApplication).appContainer
+        viewModel = appContainer.categoriesListViewModelFactory.create()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
