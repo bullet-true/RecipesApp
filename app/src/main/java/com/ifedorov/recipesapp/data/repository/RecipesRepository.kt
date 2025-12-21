@@ -5,8 +5,9 @@ import com.ifedorov.recipesapp.data.local.dao.CategoriesDao
 import com.ifedorov.recipesapp.data.local.dao.RecipesDao
 import com.ifedorov.recipesapp.model.Category
 import com.ifedorov.recipesapp.model.Recipe
+import javax.inject.Inject
 
-class RecipesRepository(
+class RecipesRepository @Inject constructor(
     private val categoriesDao: CategoriesDao,
     private val recipesDao: RecipesDao,
     private val service: RecipeApiService
