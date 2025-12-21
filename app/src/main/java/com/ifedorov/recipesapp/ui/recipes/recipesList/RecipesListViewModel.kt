@@ -1,9 +1,8 @@
 package com.ifedorov.recipesapp.ui.recipes.recipesList
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ifedorov.recipesapp.data.repository.RecipesRepository
 import com.ifedorov.recipesapp.model.Category
@@ -18,9 +17,7 @@ data class RecipesListUiState(
     val error: String? = null,
 )
 
-class RecipesListViewModel(application: Application) : AndroidViewModel(application) {
-    private val appContext = application.applicationContext
-    private val repository = RecipesRepository(appContext)
+class RecipesListViewModel(private val repository: RecipesRepository) : ViewModel() {
 
     private val _state = MutableLiveData<RecipesListUiState>()
         .apply { value = RecipesListUiState() }
