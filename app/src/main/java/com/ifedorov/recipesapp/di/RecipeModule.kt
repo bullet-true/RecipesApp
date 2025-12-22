@@ -18,12 +18,14 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class RecipeModule {
 
     @Provides
+    @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(
             context,
@@ -38,6 +40,7 @@ class RecipeModule {
     fun provideRecipesDao(appDatabase: AppDatabase): RecipesDao = appDatabase.recipesDao()
 
     @Provides
+    @Singleton
     fun provideHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
@@ -51,6 +54,7 @@ class RecipeModule {
     }
 
     @Provides
+    @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         val json = Json { ignoreUnknownKeys = true }
 
@@ -68,6 +72,7 @@ class RecipeModule {
     }
 
     @Provides
+    @Singleton
     fun provideRecipeApiService(retrofit: Retrofit): RecipeApiService {
         return retrofit.create(RecipeApiService::class.java)
     }
